@@ -31,4 +31,7 @@
         <Setter Property="BorderBrush" Value="#CCC"/>
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
+    <Style TargetType="ContentControl">
+        <Setter Property="Background" Value="red"/>
+    </Style>
 </ResourceDictionary>

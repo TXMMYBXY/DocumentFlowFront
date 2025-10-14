@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace DocumentFlowing.Views.Admin
 {
@@ -10,6 +11,11 @@ namespace DocumentFlowing.Views.Admin
         public TemplatesView()
         {
             InitializeComponent();
+        }
+
+        private void addTemplate_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            MessageBox.Show("addTemplate_Click");
         }
     }
 }

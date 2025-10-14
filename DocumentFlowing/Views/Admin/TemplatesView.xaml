@@ -5,16 +5,16 @@
         <TextBlock Text="Templates Management" FontSize="20" FontWeight="Bold" Margin="0,0,0,15"/>
 
         <StackPanel>
-            <Button Content="Add Template" Width="150" Margin="0,0,0,10"/>
             <ListView Height="300">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Template Name" Width="200"/>
+                        <GridViewColumn Header="Template name" Width="200"/>
                         <GridViewColumn Header="Created" Width="150"/>
                         <GridViewColumn Header="Actions" Width="100"/>
                     </GridView>
                 </ListView.View>
             </ListView>
+            <Button Content="Add Template" Width="150" Margin="0,0,0,10" Click="addTemplate_Click"/>
         </StackPanel>
     </Grid>
 </UserControl>
