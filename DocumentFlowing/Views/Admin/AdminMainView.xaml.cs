@@ -27,5 +27,11 @@ namespace DocumentFlowing.Views.Admin
         {
             ContentArea.Content = new SettingsView();
         }
+
+        private void logOut_Click(object sender, RoutedEventArgs e)
+        {
+            new LoginView().Show();
+            Close();
+        }
     }
 }

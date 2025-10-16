@@ -1,0 +1,66 @@
+﻿<Window x:Class="DocumentFlowing.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        Title="DocumentFlowing — Login"
+        Height="400"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F4F6F8"
+        Icon="C:\Users\myuch\source\repos\DocumentFlowing\DocumentFlowFront\DocumentFlowing\icon.png">
+
+    <Grid x:Name="MainGrid">
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="300"
+                    x:Name="RoleSelectionPanel">
+
+            <TextBlock Text="Select user role:"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"/>
+
+            <Button Content="Administrator" Margin="0,5" Click="Admin_Click"/>
+            <Button Content="Administration Employee" Margin="0,5" Click="AdminUser_Click"/>
+            <Button Content="Regular Employee" Margin="0,5" Click="Employee_Click"/>
+            <Button Content="Purchaser" Margin="0,5" Click="Purchaser_Click"/>
+        </StackPanel>
+
+        <!-- Панель авторизации -->
+        <StackPanel x:Name="LoginPanel"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="300"
+                    Visibility="Collapsed">
+
+            <TextBlock x:Name="SelectedRoleText"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox x:Name="LoginBox"
+                     mah:TextBoxHelper.Watermark="Login"
+                     Margin="0,5"
+                     Height="35"/>
+
+            <PasswordBox x:Name="PasswordBox"
+                         mah:TextBoxHelper.Watermark="Password"
+                         Margin="0,5"
+                         Height="35"/>
+            
+            <Button Content="Login"
+                    Margin="0,10"
+                    Click="Login_Click"
+                    Background="#2E3A59"
+                    Foreground="White"/>
+
+            <Button Content="Back"
+                    Click="Back_Click"
+                    Foreground="#2E3A59"
+                    Background="Transparent"/>
+        </StackPanel>
+    </Grid>
+</Window>
