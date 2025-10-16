@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Administration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,12 +57,20 @@ namespace DocumentFlowing.Views
                 MessageBox.Show("Please enter both login and password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-
-            MessageBox.Show($"Login successful as {_selectedRole}!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // TODO: открой нужное окно в зависимости от роли
-            // new AdminMainView().Show();
-            // Close();
+            else
+            {
+                switch (_selectedRole)
+                {
+                    case "Administrator":
+                        new AdminMainView().Show();
+                        break;
+                    case "Administration employee":
+                        new AdminUserMainView().Show();
+                        break;
+                }
+            }
+            //MessageBox.Show($"Login successful as {_selectedRole}!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+            Close();
         }
     }
 }

@@ -14,8 +14,6 @@
     <Folder Include="ViewModels\Administration\" />
     <Folder Include="ViewModels\Purchaser\" />
     <Folder Include="ViewModels\Employee\" />
-    <Folder Include="Views\Administration\" />
-    <Folder Include="Views\Employee\" />
     <Folder Include="Views\Purchaser\" />
     <Folder Include="Helpers\" />
   </ItemGroup>
