@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Controls;
+using System.Windows;
 
 namespace DocumentFlowing.Views.Administration
 {
@@ -10,24 +12,19 @@ namespace DocumentFlowing.Views.Administration
         public AdminUserMainView()
         {
             InitializeComponent();
-
-            Sidebar.AddMenuItem("Documents", documents_Click);
-            Sidebar.AddMenuItem("Reports", reports_Click);
+            ContentArea.Content = new TemplatesView();
+            //Sidebar.AddMenuItem("Documents", documents_Click);
+            //Sidebar.AddMenuItem("Reports", reports_Click);
         }
 
         private void documents_Click(object sender, RoutedEventArgs e)
         {
-
+            MessageBox.Show("documentsClick");
         }
 
         private void reports_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void settings_Clicked(object sender, RoutedEventArgs e)
-        {
-
+            MessageBox.Show("reportsClick");
         }
 
         private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
@@ -37,8 +34,7 @@ namespace DocumentFlowing.Views.Administration
         }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
         {
-            
-            Close();
+            ContentArea.Content = new SettingsView();
         }
     }
 }

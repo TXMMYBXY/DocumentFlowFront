@@ -1,0 +1,78 @@
+﻿<UserControl x:Class="DocumentFlowing.Views.Admin.TemplatesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <!-- Список шаблонов -->
+            <ColumnDefinition x:Name="PreviewColumn" Width="3*"/>
+            <!-- Предпросмотр -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Левая часть: список шаблонов -->
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Templates Management"
+                       FontSize="20"
+                       FontWeight="Bold"
+                       Margin="0,0,0,15"/>
+
+            <ListView x:Name="TemplateList"
+                      Grid.Row="1"
+                      Height="300"
+                      SelectionChanged="TemplateList_SelectionChanged">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Template name" DisplayMemberBinding="{Binding Name}" Width="200"/>
+                        <GridViewColumn Header="Created" DisplayMemberBinding="{Binding Created}" Width="150"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,10,0,0">
+                <Button Content="Add Template"
+                        Width="150"
+                        Click="addTemplate_Click"/>
+                <Button x:Name="TogglePreviewButton"
+                        Content=">>"
+                        Width="40"
+                        Height="30"
+                        Margin="10,0,0,0"
+                        Click="TogglePreview_Click"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Правая часть: панель предпросмотра -->
+        <Border x:Name="PreviewArea"
+                Grid.Column="1"
+                Margin="10,0,0,0"
+                Background="#FAFAFA"
+                BorderBrush="#DDD"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="10">
+            <StackPanel>
+                <TextBlock x:Name="PreviewTitle"
+                           Text="Select a template to preview"
+                           FontWeight="Bold"
+                           FontSize="18"
+                           Margin="0,0,0,10"/>
+                <TextBlock x:Name="PreviewDescription"
+                           Text="Template details will appear here..."
+                           TextWrapping="Wrap"
+                           Foreground="Gray"
+                           FontSize="14"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

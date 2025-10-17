@@ -3,6 +3,7 @@
         xmlns:Controls="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:DocumentFlowing.Views.Admin"
+        xmlns:controls="clr-namespace:DocumentFlowing.Views.Controls"
         Title="Document flow" Height="450" Width="800" Icon="C:\Users\myuch\source\repos\DocumentFlowing\DocumentFlowFront\DocumentFlowing\icon.png">
 
     <Grid>
@@ -19,10 +20,11 @@
 
             <Button Content="Templates" Margin="10,5" Click="templates_Click"/>
             <Button Content="Users" Margin="10,5" Click="users_Click"/>
-            <Button Content="Settings" Margin="10,5" Click="settings_Click"/>
-
-            <Separator Margin="10,10"/>
-            <Button Content="Logout" Margin="10,5" Click="logOut_Click"/>
+            <controls:SidebarControl x:Name="Sidebar"
+                 LogoutClicked="Sidebar_LogoutClicked"
+                 SettingsClicked ="Sidebar_SettingsClicked"
+                 Grid.Column="0"/>
+            
         </StackPanel>
 
         <!-- Основная рабочая область -->

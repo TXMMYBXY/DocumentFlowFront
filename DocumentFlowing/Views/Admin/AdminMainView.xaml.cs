@@ -23,15 +23,14 @@ namespace DocumentFlowing.Views.Admin
             ContentArea.Content = new UsersView();
         }
 
-        private void settings_Click(object sernder, RoutedEventArgs e)
-        {
-            ContentArea.Content = new SettingsView();
-        }
-
-        private void logOut_Click(object sender, RoutedEventArgs e)
+        private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
         {
             new LoginView().Show();
             Close();
+        }
+        private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
+        {
+            ContentArea.Content = new SettingsView();
         }
     }
 }
