@@ -26,6 +26,7 @@
             <Button Content="Administration Employee" Margin="0,5" Click="AdminUser_Click"/>
             <Button Content="Regular Employee" Margin="0,5" Click="Employee_Click"/>
             <Button Content="Purchaser" Margin="0,5" Click="Purchaser_Click"/>
+            <Button Content="Back*" Margin="0,5" Click="mainWindowClick"/>
         </StackPanel>
 
         <!-- Панель авторизации -->
