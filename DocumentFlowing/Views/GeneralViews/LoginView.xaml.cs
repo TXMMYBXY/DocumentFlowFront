@@ -1,7 +1,10 @@
-﻿using DocumentFlowing.Views.Admin;
+﻿using DocumentFlowing.Client;
+using DocumentFlowing.Models;
+using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Administration;
 using DocumentFlowing.Views.Employee;
 using DocumentFlowing.Views.Purchaser;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -13,9 +16,11 @@ namespace DocumentFlowing.Views
     public partial class LoginView : Window
     {
         private string _selectedRole = string.Empty;
+        private readonly GeneralClient _apiClient;
         public LoginView()
         {
             InitializeComponent();
+            _apiClient = App.ServiceProvider.GetRequiredService<GeneralClient>();
         }
 
         private void Admin_Click(object sender, RoutedEventArgs e) => ShowLoginPanel("Administrator");
@@ -40,34 +45,103 @@ namespace DocumentFlowing.Views
             PasswordBox.Password = string.Empty;
         }
 
-        private void Login_Click(object sender, RoutedEventArgs e)
+        //private void Login_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Здесь позже добавится логика проверки логина/пароля через API
+        //    if (string.IsNullOrWhiteSpace(LoginBox.Text) || string.IsNullOrWhiteSpace(PasswordBox.Password))
+        //    {
+        //        MessageBox.Show("Please enter both login and password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        switch (_selectedRole)
+        //        {
+        //            case "Administrator":
+        //                new AdminMainView().Show();
+        //                break;
+        //            case "Administration employee":
+        //                new AdminUserMainView().Show();
+        //                break;
+        //            case "Employee":
+        //                new EmployeeMainView().Show();
+        //                break;
+        //            case "Purchaser":
+        //                new PurchaserMainView().Show();
+        //                break;
+        //        }
+        //    }
+        //    //MessageBox.Show($"Login successful as {_selectedRole}!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        //    Close();
+        //}
+        private async void Login_Click(object sender, RoutedEventArgs e)
         {
-            // Здесь позже добавится логика проверки логина/пароля через API
             if (string.IsNullOrWhiteSpace(LoginBox.Text) || string.IsNullOrWhiteSpace(PasswordBox.Password))
             {
                 MessageBox.Show("Please enter both login and password.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            else
+
+            // Показываем индикатор загрузки
+            //LoginButton.IsEnabled = false;
+            //LoginButton.Content = "Logging in...";
+
+            try
             {
-                switch (_selectedRole)
+                // Создаем запрос для API
+                var loginRequest = new LoginRequest
                 {
-                    case "Administrator":
-                        new AdminMainView().Show();
-                        break;
-                    case "Administration employee":
-                        new AdminUserMainView().Show();
-                        break;
-                    case "Employee":
-                        new EmployeeMainView().Show();
-                        break;
-                    case "Purchaser":
-                        new PurchaserMainView().Show();
-                        break;
+                    Login = LoginBox.Text,
+                    Password = PasswordBox.Password
+                };
+
+                // Отправляем запрос к API
+                var response = await _apiClient.PostResponseAsync<LoginRequest, LoginResponse>(
+                    loginRequest, "authorization/login");
+
+                if (response != null)
+                {
+                    // Авторизация успешна
+                    OpenRoleSpecificWindow(_selectedRole);
+                    Close();
+                }
+                else
+                {
+
+                    MessageBox.Show("", "Login Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            //MessageBox.Show($"Login successful as {_selectedRole}!", "Info", MessageBoxButton.OK, MessageBoxImage.Information);
-            Close();
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                // Восстанавливаем кнопку
+                //LoginButton.IsEnabled = true;
+                //LoginButton.Content = "Login";
+            }
+        }
+        private void OpenRoleSpecificWindow(string role)
+        {
+            switch (role)
+            {
+                case "Administrator":
+                    new AdminMainView().Show();
+                    break;
+                case "Administration employee":
+                    new AdminUserMainView().Show();
+                    break;
+                case "Employee":
+                    new EmployeeMainView().Show();
+                    break;
+                case "Purchaser":
+                    new PurchaserMainView().Show();
+                    break;
+                default:
+                    MessageBox.Show("Unknown role selected.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    break;
+            }
         }
 
         private void mainWindowClick(object sender, RoutedEventArgs e)
