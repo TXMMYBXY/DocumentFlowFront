@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
 namespace DocumentFlowing.Models;
 public class LoginResponse
 {
     [JsonPropertyName("userInfo")]
     public UserInfoDto UserInfo { get; set; }
-    [JsonPropertyName("token")]
-    public string Token { get; set; }
+    [JsonPropertyName("accessToken")]
+    public string AccessToken { get; set; }
     [JsonPropertyName("expiresAt")]
     public string ExpiresAt { get; set; }
     [JsonPropertyName("tokenType")]
     public string TokenType { get; set; } = "Bearer";
+    [JsonPropertyName("refreshToken")]
+    public RefreshToken RefreshToken { get; set; }
 }

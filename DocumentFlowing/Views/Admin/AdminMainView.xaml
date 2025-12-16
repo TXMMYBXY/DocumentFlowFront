@@ -4,7 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:DocumentFlowing.Views.Admin"
         xmlns:controls="clr-namespace:DocumentFlowing.Views.Controls"
-        Title="Document flow" Height="450" Width="800" Icon="C:\Users\myuch\source\repos\DocumentFlowing\DocumentFlowFront\DocumentFlowing\icon.png">
+        Title="Document flow" Height="450" Width="800" Icon="/Assets/icon.png">
 
     <Grid>
         <Grid.ColumnDefinitions>

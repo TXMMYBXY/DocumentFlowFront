@@ -1,16 +1,22 @@
-﻿using DocumentFlowing.Views.Admin;
+﻿using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Controls;
 using System.Windows;
 
-namespace DocumentFlowing.Views.Administration
+namespace DocumentFlowing.Views.Boss
 {
     /// <summary>
     /// Логика взаимодействия для AdminUserMainView.xaml
     /// </summary>
-    public partial class AdminUserMainView : Window
+    public partial class BossMainView : Window
     {
-        public AdminUserMainView()
+        private readonly IAuthorizationClient _authorizationClient; 
+        private readonly ITokenService _tokenService;
+        public BossMainView(IAuthorizationClient authorizationClient,  ITokenService tokenService)
         {
+            _authorizationClient = authorizationClient;
+            _tokenService = tokenService;
             InitializeComponent();
             ContentArea.Content = new TemplatesView();
             //Sidebar.AddMenuItem("Documents", documents_Click);
@@ -29,7 +35,7 @@ namespace DocumentFlowing.Views.Administration
 
         private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
         {
-            new LoginView().Show();
+            new LoginWindow(_authorizationClient, _tokenService).Show();
             Close();
         }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
