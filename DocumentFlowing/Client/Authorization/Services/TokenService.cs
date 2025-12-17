@@ -1,18 +1,23 @@
 ﻿using DocumentFlowing.Client.Authorization.ViewModel;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using Microsoft.Win32;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace DocumentFlowing.Client.Services;
+namespace DocumentFlowing.Client.Authorization.Services;
 
 public class TokenService : ITokenService
 {
-    private static readonly byte[] _entropy = Encoding.UTF8.GetBytes("DocumentFlowEntropy");
     private const string _registryPath = @"Software\DocumentFlowing\Tokens";
+    private readonly IDpapiService _dpapiService;
 
-    // Сохраняем токены в реестре Windows
+    public TokenService(IDpapiService dpapiService)
+    {
+        _dpapiService = dpapiService;
+    }
+    
     public void SaveTokens(LoginResponse loginResponse)
     {
         try
@@ -26,7 +31,7 @@ public class TokenService : ITokenService
                 // Сохраняем access token
                 if (!string.IsNullOrEmpty(loginResponse.AccessToken))
                 {
-                    var encryptedAccessToken = Encrypt(loginResponse.AccessToken);
+                    var encryptedAccessToken = _dpapiService.Encrypt(loginResponse.AccessToken);
                     key.SetValue("AccessToken", encryptedAccessToken);
                     key.SetValue("AccessTokenExpires", loginResponse.ExpiresAt);
                 }
@@ -34,7 +39,7 @@ public class TokenService : ITokenService
                 // Сохраняем refresh token
                 if (loginResponse.RefreshToken != null && !string.IsNullOrEmpty(loginResponse.RefreshToken.Token))
                 {
-                    var encryptedRefreshToken = Encrypt(loginResponse.RefreshToken.Token);
+                    var encryptedRefreshToken = _dpapiService.Encrypt(loginResponse.RefreshToken.Token);
                     key.SetValue("RefreshToken", encryptedRefreshToken);
                     key.SetValue("RefreshTokenExpires", loginResponse.RefreshToken.ExpiresAt);
                 }
@@ -76,7 +81,7 @@ public class TokenService : ITokenService
                 
                 if (refreshTokenResponse.Token != null && !string.IsNullOrEmpty(refreshTokenResponse.Token))
                 {
-                    var encryptedRefreshToken = Encrypt(refreshTokenResponse.Token);
+                    var encryptedRefreshToken = _dpapiService.Encrypt(refreshTokenResponse.Token);
                     key.SetValue("RefreshToken", encryptedRefreshToken);
                     key.SetValue("RefreshTokenExpires", refreshTokenResponse.ExpiresAt);
                 }
@@ -100,7 +105,7 @@ public class TokenService : ITokenService
                 var encryptedToken = key.GetValue("AccessToken") as string;
                 if (string.IsNullOrEmpty(encryptedToken)) return null;
 
-                return Decrypt(encryptedToken);
+                return _dpapiService.Decrypt(encryptedToken);
             }
         }
         catch
@@ -121,7 +126,7 @@ public class TokenService : ITokenService
                 var encryptedToken = key.GetValue("RefreshToken") as string;
                 if (string.IsNullOrEmpty(encryptedToken)) return null;
 
-                return Decrypt(encryptedToken);
+                return _dpapiService.Decrypt(encryptedToken);
             }
         }
         catch
@@ -246,26 +251,6 @@ public class TokenService : ITokenService
         {
             return false;
         }
-    }
-
-    // Шифрование с использованием DPAPI
-    private static string Encrypt(string plainText)
-    {
-        if (string.IsNullOrEmpty(plainText)) return string.Empty;
-
-        byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
-        byte[] encryptedBytes = ProtectedData.Protect(plainBytes, _entropy, DataProtectionScope.CurrentUser);
-        return Convert.ToBase64String(encryptedBytes);
-    }
-
-    // Дешифрование с использованием DPAPI
-    private static string Decrypt(string encryptedText)
-    {
-        if (string.IsNullOrEmpty(encryptedText)) return string.Empty;
-
-        byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
-        byte[] plainBytes = ProtectedData.Unprotect(encryptedBytes, _entropy, DataProtectionScope.CurrentUser);
-        return Encoding.UTF8.GetString(plainBytes);
     }
 
     // Проверяем срок действия refresh token

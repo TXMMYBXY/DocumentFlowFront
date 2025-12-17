@@ -1,4 +1,5 @@
 ﻿using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.Views.Admin;

@@ -1,6 +1,8 @@
 ﻿using DocumentFlowing.Client.Authorization;
+using DocumentFlowing.Client.Authorization.Services;
 using DocumentFlowing.Configuration;
 using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;

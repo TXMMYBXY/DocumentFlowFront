@@ -1,9 +1,11 @@
 using DocumentFlowing.Client;
 using DocumentFlowing.Client.Authorization;
-using DocumentFlowing.Client.Services;
+using DocumentFlowing.Client.Authorization.Services;
 using DocumentFlowing.Helpers;
 using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Services;
 using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +33,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IAuthorizationClient, AuthorizationClient>();
+        services.AddScoped<IDpapiService, DpapiService>();
         
         
         // Views / ViewModels

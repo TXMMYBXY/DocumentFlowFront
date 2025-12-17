@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using DocumentFlowing.Client.Authorization.ViewModel;
 using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 
-namespace DocumentFlowing.Client.Services;
+namespace DocumentFlowing.Client.Authorization.Services;
 
 public class AuthorizationService :  IAuthorizationService
 {
