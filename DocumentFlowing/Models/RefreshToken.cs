@@ -7,6 +7,6 @@ public class RefreshToken
     public string? Token { get; set; }
     [JsonPropertyName("expiresAt")]
     public string ExpiresAt { get; set; }
-    [JsonPropertyName("user")]
+    [JsonPropertyName("userId")]
     public int UserId { get; set; }
 }

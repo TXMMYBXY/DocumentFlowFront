@@ -2,6 +2,7 @@
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Authorization;
 using DocumentFlowing.Views.Controls;
 using System.Windows;
 
@@ -12,12 +13,9 @@ namespace DocumentFlowing.Views.Boss
     /// </summary>
     public partial class BossMainView : Window
     {
-        private readonly IAuthorizationClient _authorizationClient; 
-        private readonly ITokenService _tokenService;
-        public BossMainView(IAuthorizationClient authorizationClient,  ITokenService tokenService)
+
+        public BossMainView()
         {
-            _authorizationClient = authorizationClient;
-            _tokenService = tokenService;
             InitializeComponent();
             ContentArea.Content = new TemplatesView();
             //Sidebar.AddMenuItem("Documents", documents_Click);
@@ -36,8 +34,7 @@ namespace DocumentFlowing.Views.Boss
 
         private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
         {
-            new LoginWindow(_authorizationClient, _tokenService).Show();
-            Close();
+
         }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
         {

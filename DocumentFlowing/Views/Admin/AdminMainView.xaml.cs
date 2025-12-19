@@ -1,6 +1,7 @@
 ﻿using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Views.Authorization;
 using System.Windows;
 
 namespace DocumentFlowing.Views.Admin
@@ -10,12 +11,8 @@ namespace DocumentFlowing.Views.Admin
     /// </summary>
     public partial class AdminMainView : Window
     {
-        private readonly IAuthorizationClient _authorizationClient;
-        private readonly ITokenService _tokenService;
-        public AdminMainView(IAuthorizationClient authorizationClient,  ITokenService tokenService)
+        public AdminMainView()
         {
-            _authorizationClient = authorizationClient;
-            _tokenService = tokenService;
             InitializeComponent();
             ContentArea.Content = new TemplatesView();
         }
@@ -32,8 +29,7 @@ namespace DocumentFlowing.Views.Admin
 
         private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
         {
-            new LoginWindow(_authorizationClient, _tokenService).Show();
-            Close();
+
         }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
         {

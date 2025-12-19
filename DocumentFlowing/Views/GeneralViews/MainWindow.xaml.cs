@@ -3,6 +3,7 @@ using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Authorization;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -31,7 +32,7 @@ namespace DocumentFlowing
 
         private void loginClick(object sender, RoutedEventArgs e)
         {
-            new LoginWindow(_authorizationClient, _tokenService).Show();
+            
             Close();
         }
 

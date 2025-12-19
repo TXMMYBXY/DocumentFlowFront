@@ -1,16 +1,14 @@
-﻿using DocumentFlowing.Client.Authorization.ViewModel;
+﻿using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using Microsoft.Win32;
-using System.Security.Cryptography;
-using System.Text;
 
-namespace DocumentFlowing.Client.Authorization.Services;
+namespace DocumentFlowing.Services;
 
 public class TokenService : ITokenService
 {
-    private const string _registryPath = @"Software\DocumentFlowing\Tokens";
+    private const string RegistryPath = @"Software\DocumentFlowing\Tokens";
     private readonly IDpapiService _dpapiService;
 
     public TokenService(IDpapiService dpapiService)
@@ -24,7 +22,7 @@ public class TokenService : ITokenService
         {
             if (loginResponse == null) return;
 
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
             {
                 if (key == null) return;
 
@@ -75,7 +73,7 @@ public class TokenService : ITokenService
         {
             if (refreshTokenResponse == null) return;
 
-            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
             {
                 if (key == null) return;
                 
@@ -98,7 +96,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return null;
 
@@ -119,7 +117,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return null;
 
@@ -140,7 +138,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return null;
 
@@ -167,7 +165,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return null;
 
@@ -185,7 +183,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return null;
 
@@ -203,7 +201,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            Registry.CurrentUser.DeleteSubKeyTree(_registryPath, false);
+            Registry.CurrentUser.DeleteSubKeyTree(RegistryPath, false);
         }
         catch
         {
@@ -219,7 +217,7 @@ public class TokenService : ITokenService
             var token = GetAccessToken();
             if (string.IsNullOrEmpty(token)) return false;
 
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return false;
 
@@ -258,7 +256,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(_registryPath))
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
                 if (key == null) return false;
 

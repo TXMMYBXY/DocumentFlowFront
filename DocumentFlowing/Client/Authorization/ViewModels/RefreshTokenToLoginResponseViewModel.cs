@@ -1,7 +1,7 @@
 using DocumentFlowing.Models;
 using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Client.Authorization.ViewModel;
+namespace DocumentFlowing.Client.Authorization.ViewModels;
 
 public class RefreshTokenToLoginResponseViewModel
 {

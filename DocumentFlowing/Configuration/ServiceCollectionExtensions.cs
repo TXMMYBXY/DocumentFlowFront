@@ -1,13 +1,15 @@
 using DocumentFlowing.Client;
 using DocumentFlowing.Client.Authorization;
-using DocumentFlowing.Client.Authorization.Services;
 using DocumentFlowing.Helpers;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Models;
 using DocumentFlowing.Services;
+using DocumentFlowing.ViewModels.Authorization;
 using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,13 +36,19 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationService, AuthorizationService>();
         services.AddScoped<IAuthorizationClient, AuthorizationClient>();
         services.AddScoped<IDpapiService, DpapiService>();
+        services.AddScoped<INavigationService, NavigationService>();
         
+        // Models
+        services.AddScoped<LoginModel>();
         
-        // Views / ViewModels
+        // Views
         services.AddSingleton<MainWindow>();
-        services.AddTransient<LoginWindow>();
+        services.AddTransient<LoginView>();
         services.AddTransient<AdminMainView>();
-
+        
+        // ViewModels
+        services.AddTransient<LoginViewModel>();
+        
         return services;
     }
 }

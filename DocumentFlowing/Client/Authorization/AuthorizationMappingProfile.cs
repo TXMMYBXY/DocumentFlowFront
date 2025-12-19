@@ -1,5 +1,5 @@
 using AutoMapper;
-using DocumentFlowing.Client.Authorization.ViewModel;
+using DocumentFlowing.Client.Authorization.ViewModels;
 
 namespace DocumentFlowing.Client.Authorization;
 

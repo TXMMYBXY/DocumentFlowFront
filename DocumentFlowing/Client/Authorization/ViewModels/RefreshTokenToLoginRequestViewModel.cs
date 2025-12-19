@@ -1,4 +1,4 @@
-namespace DocumentFlowing.Client.Authorization.ViewModel;
+namespace DocumentFlowing.Client.Authorization.ViewModels;
 
 public class RefreshTokenToLoginRequestViewModel
 {
