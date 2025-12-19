@@ -16,10 +16,10 @@
             <Separator Margin="10,10"/>
             <Button Content="Settings"
                     Margin="10,5"
-                    Click="settings_Click"/>  
+                    Command="{Binding SettingsCommand}"/>  
             <Button Content="Logout"
                     Margin="10,5"
-                    Click="logout_Click"/>
+                    Command="{Binding LogoutCommand}"/>
         </StackPanel>
     </Border>
 </UserControl>

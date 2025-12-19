@@ -1,5 +1,6 @@
 ﻿using DocumentFlowing.Configuration;
 using DocumentFlowing.Helpers;
+using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Views.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,11 +30,14 @@ public partial class App : Application
         try
         {
             var loginView = _serviceProvider.GetService<LoginView>();
+            var viewModel = loginView.DataContext as IAsyncInitialization;
                 
             if (loginView != null)
             {
                 MainWindow = loginView;
                 loginView.Show();
+                
+                await viewModel.Initialization;
             }
             else
             {

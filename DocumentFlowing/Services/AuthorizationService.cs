@@ -3,6 +3,8 @@ using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Models;
+using System.Windows;
 
 namespace DocumentFlowing.Services;
 
@@ -25,16 +27,16 @@ public class AuthorizationService :  IAuthorizationService
     {
         try
         {
-            var refreshTokenViewModel = new RefreshTokenViewModel
+            var request = new RefreshTokenToLoginRequestViewModel
             {
-                Token = _tokenService.GetRefreshToken()
+                RefreshToken = _tokenService.GetRefreshToken()
             };
             
             
-            if (!string.IsNullOrEmpty(refreshTokenViewModel.Token) && _tokenService.IsRefreshTokenValid())
+            if (!string.IsNullOrEmpty(request.RefreshToken) && _tokenService.IsRefreshTokenValid())
             {
                 // Запрос к API за доступом
-                var request = new RefreshTokenToLoginRequestViewModel { RefreshToken = refreshTokenViewModel.Token };
+                
                 var refreshToken 
                     = await _authorizationClient.RequestForAccessAsync<RefreshTokenToLoginRequestViewModel, RefreshTokenToLoginResponseViewModel>
                         (request, "authorization/request-for-access");
@@ -60,5 +62,48 @@ public class AuthorizationService :  IAuthorizationService
             return false;
         }
     }
-    
+
+    public async Task LoginAsync(string email, string password)
+    {
+        try
+        {
+            var loginRequest = new LoginRequest
+            {
+                Email = email,
+                Password = password
+            };
+
+            var response = await _authorizationClient.LoginAsync<LoginRequest, LoginResponse>(
+                loginRequest, "authorization/login");
+
+            if (response != null && !string.IsNullOrEmpty(response.AccessToken))
+            {
+                // Сохраняем токены
+                _tokenService.SaveTokens(response);
+                // LoginSuccessful?.Invoke(this, EventArgs.Empty);
+
+                // Открываем соответствующее окно на основе RoleId из ответа
+                if (response.UserInfo != null)
+                {
+                    // _navigationService.NavigateToRole(response.UserInfo.RoleId);
+                    Application.Current.MainWindow?.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Ошибка получения информации о пользователе.", "Ошибка",
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Неверный email или пароль.", "Ошибка входа",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка",
+            MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
 }

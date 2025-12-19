@@ -11,13 +11,13 @@ public partial class LoginView : Window
     public event EventHandler LoginSuccessful;
     
     public LoginView(
-        IAuthorizationClient authorizationClient, 
+        IAuthorizationService authorizationService, 
         ITokenService tokenService,
         INavigationService navigationService)
     {
         InitializeComponent();
             
-        DataContext = new LoginViewModel(authorizationClient, tokenService, navigationService);
+        DataContext = new LoginViewModel(authorizationService, tokenService, navigationService);
             
     }
 }

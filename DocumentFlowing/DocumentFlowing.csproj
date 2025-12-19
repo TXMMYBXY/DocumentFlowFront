@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Interfaces\Client\Services\" />
     <Folder Include="ViewModels\Boss\" />
     <Folder Include="ViewModels\Purchaser\" />
     <Folder Include="ViewModels\User\" />

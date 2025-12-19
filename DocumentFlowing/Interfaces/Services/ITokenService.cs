@@ -36,7 +36,7 @@ public interface ITokenService
     /// <summary>
     /// Проверяет есть ли валидный токен доступа
     /// </summary>
-    bool HasValidToken();
+    bool HasValidAccessToken();
     /// <summary>
     /// Проверяет есть ли валидный токен обновления
     /// </summary>

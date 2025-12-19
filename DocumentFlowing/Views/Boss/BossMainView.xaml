@@ -23,8 +23,7 @@
 
 
             <controls:SidebarControl x:Name="Sidebar"
-                            LogoutClicked="Sidebar_LogoutClicked"
-                            SettingsClicked ="Sidebar_SettingsClicked"
+                            
                             Grid.Column="0"/>
         </StackPanel>
         

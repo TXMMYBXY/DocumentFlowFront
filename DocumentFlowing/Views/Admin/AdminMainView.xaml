@@ -21,8 +21,7 @@
             <Button Content="Templates" Margin="10,5" Click="templates_Click"/>
             <Button Content="Users" Margin="10,5" Click="users_Click"/>
             <controls:SidebarControl x:Name="Sidebar"
-                 LogoutClicked="Sidebar_LogoutClicked"
-                 SettingsClicked ="Sidebar_SettingsClicked"
+                 
                  Grid.Column="0"/>
             
         </StackPanel>

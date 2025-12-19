@@ -29,7 +29,7 @@ namespace DocumentFlowing.Views.Admin
 
         private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
         {
-
+            
         }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
         {

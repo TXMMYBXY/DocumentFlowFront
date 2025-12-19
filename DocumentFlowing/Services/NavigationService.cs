@@ -12,7 +12,7 @@ namespace DocumentFlowing.Services;
 
 public class NavigationService : INavigationService
 {
-    public void NavigateToRole(int roleId)
+    public void NavigateToRole(int? roleId)
     {
         switch (roleId)
         {

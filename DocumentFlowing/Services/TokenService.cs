@@ -210,7 +210,7 @@ public class TokenService : ITokenService
     }
 
     // Проверяем, есть ли сохраненный токен
-    public bool HasValidToken()
+    public bool HasValidAccessToken()
     {
         try
         {
@@ -230,7 +230,7 @@ public class TokenService : ITokenService
                             System.Globalization.CultureInfo.InvariantCulture,
                             System.Globalization.DateTimeStyles.None, out DateTime expiresAt))
                     {
-                        return expiresAt > DateTime.Now.AddMinutes(5); // Добавляем буфер в 5 минут
+                        return expiresAt > DateTime.Now; // Добавляем буфер в 5 минут
                     }
                     else
                     {
