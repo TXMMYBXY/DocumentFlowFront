@@ -31,14 +31,5 @@ namespace DocumentFlowing.Views.Boss
         {
             MessageBox.Show("reportsClick");
         }
-
-        private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
-        {
-
-        }
-        private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
-        {
-            ContentArea.Content = new SettingsView();
-        }
     }
 }

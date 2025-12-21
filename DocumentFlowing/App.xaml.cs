@@ -36,21 +36,9 @@ public partial class App : Application
         
         _serviceProvider = services.BuildServiceProvider();
         
-        // Проверяем токен и показываем соответствующее окно
         using (var scope = _serviceProvider.CreateScope())
         {
-            var tokenService = scope.ServiceProvider.GetService<ITokenService>();
             var navigationService = scope.ServiceProvider.GetService<INavigationService>();
-            
-            if (tokenService != null && tokenService.IsRefreshTokenValid())
-            {
-                var userInfo = tokenService.GetUserInfo();
-                if (userInfo != null)
-                {
-                    navigationService.NavigateToRole(userInfo.RoleId);
-                    return;
-                }
-            }
             
             navigationService.NavigateTo<LoginView>();
         }

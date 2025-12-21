@@ -92,7 +92,6 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     _navigationService.NavigateToRole(roleId.Value);
-                    App.Current.MainWindow.Close();
                 });
             }
         }
@@ -106,9 +105,11 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     {
         var roleId = await _loginModel.LoginAsync(Email, Password);
 
-        if (roleId != null)
+        if (roleId.HasValue)
         {
             _navigationService.NavigateToRole(roleId);
         }
+
+        IsLoading = false;
     }
 }

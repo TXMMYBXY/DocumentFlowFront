@@ -1,7 +1,6 @@
 ﻿<Window x:Class="DocumentFlowing.Views.Boss.BossMainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:local="clr-namespace:DocumentFlowing.Views.Boss"
         xmlns:controls="clr-namespace:DocumentFlowing.Views.Controls"
         Title="Administration Panel"
         Height="600"
@@ -16,11 +15,13 @@
 
         <!-- Навигация -->
         <StackPanel Background="#EFEFEF" Grid.Column="0">
-            <TextBlock Text="Administration Panel" FontWeight="Bold" FontSize="18" Margin="10,20,10,20"/>
+            <TextBlock Text="Boss Panel" FontWeight="Bold" FontSize="18" Margin="10,20,10,20"/>
 
             <Button Content="Documents" Margin="10,5" Click="documents_Click"/>
             <Button Content="Reports" Margin="10,5" Click="reports_Click"/>
-            
+            <UserControl>
+                <controls:SidebarView DataContext="{Binding SidebarViewModel}"/>
+            </UserControl>
         </StackPanel>
         
         <!-- Основная область -->

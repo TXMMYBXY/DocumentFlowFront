@@ -22,7 +22,6 @@ public class SidebarViewModel : BaseViewModel
     
     private async Task ExecuteLogoutAsync()
     {
-        // Можно добавить подтверждение
         var result = MessageBox.Show(
             "Вы уверены, что хотите выйти?", 
             "Подтверждение выхода", 

@@ -8,6 +8,7 @@ using DocumentFlowing.Models;
 using DocumentFlowing.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
+using DocumentFlowing.ViewModels.Boss;
 using DocumentFlowing.ViewModels.Controls;
 using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Authorization;
@@ -50,8 +51,8 @@ public static class ServiceCollectionExtensions
         // Views
         services.AddSingleton<MainWindow>();
         services.AddTransient<LoginView>();
-        services.AddTransient<AdminMainView>();
         services.AddTransient<SidebarView>();
+        services.AddTransient<AdminMainView>();
         services.AddTransient<BossMainView>();
         services.AddTransient<PurchaserMainView>();
         services.AddTransient<UserMainView>();
@@ -60,6 +61,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<LoginViewModel>();
         services.AddTransient<SidebarViewModel>();
         services.AddTransient<AdminMainViewModel>();
+        services.AddTransient<BossMainViewModel>();
         
         return services;
     }

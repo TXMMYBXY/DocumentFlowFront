@@ -4,6 +4,7 @@ using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
 using DocumentFlowing.ViewModels.Base;
+using DocumentFlowing.ViewModels.Boss;
 using DocumentFlowing.ViewModels.Controls;
 using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Authorization;
@@ -31,15 +32,16 @@ public class NavigationService : INavigationService
         {
             { typeof(LoginView), typeof(LoginViewModel) },
             { typeof(AdminMainView), typeof(AdminMainViewModel) },
+            { typeof(BossMainView), typeof(BossMainViewModel) },
         };
         
         // Инициализаторы для View с SideBar
         _viewInitializers = new Dictionary<Type, Action<Window, IServiceProvider>>
         {
-            { typeof(AdminMainView), InitializeWindowWithSidebar },
-            { typeof(BossMainView), InitializeWindowWithSidebar },
-            { typeof(PurchaserMainView), InitializeWindowWithSidebar },
-            { typeof(UserMainView), InitializeWindowWithSidebar }
+            { typeof(AdminMainView), _InitializeWindowWithSidebar },
+            { typeof(BossMainView), _InitializeWindowWithSidebar },
+            { typeof(PurchaserMainView), _InitializeWindowWithSidebar },
+            { typeof(UserMainView), _InitializeWindowWithSidebar }
         };
     }
     
@@ -110,7 +112,7 @@ public class NavigationService : INavigationService
         ShowWindow(view);
     }
     
-    private void InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
+    private void _InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
     {
         if (window.DataContext is IHasSidebar sidebarContainer)
         {
