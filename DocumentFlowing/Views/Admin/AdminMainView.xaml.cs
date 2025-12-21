@@ -17,10 +17,7 @@ namespace DocumentFlowing.Views.Admin
 
         public AdminMainView()
         {
-            
             InitializeComponent();
-            // Создаем SidebarViewModel вручную
-            
             ContentArea.Content = new TemplatesView();
         }
         
@@ -35,10 +32,6 @@ namespace DocumentFlowing.Views.Admin
             ContentArea.Content = new UsersView();
         }
 
-        private void Sidebar_LogoutClicked(object sender, RoutedEventArgs e)
-        {
-            
-        }
         private void Sidebar_SettingsClicked(object sender, RoutedEventArgs e)
         {
             ContentArea.Content = new SettingsView();

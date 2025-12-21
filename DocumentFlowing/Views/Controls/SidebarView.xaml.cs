@@ -7,7 +7,5 @@ public partial class SidebarView : UserControl
     public SidebarView()
     {
         InitializeComponent();
-
-        // DataContext = new SidebarViewModel(sessionProviderService);
     }
 }

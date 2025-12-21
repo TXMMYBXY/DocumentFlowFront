@@ -77,30 +77,39 @@ public class NavigationService : INavigationService
 
     public void NavigateTo<TView>() where TView : Window
     {
-        using (var scope = _serviceProvider.CreateScope())
+        // Убираем 'using', чтобы scope не уничтожался сразу после выхода из метода.
+        // Scope должен жить столько же, сколько и созданное им окно.
+        var scope = _serviceProvider.CreateScope();
+        
+        // 1. Получаем View
+        var view = (TView)scope.ServiceProvider.GetService(typeof(TView));
+        
+        if (view == null)
         {
-            // 1. Получаем View
-            var view = (TView)scope.ServiceProvider.GetService(typeof(TView));
-            
-            if (view == null) throw new InvalidOperationException($"View {typeof(TView)} not registered");
-            
-            // 2. Получаем соответствующий ViewModel
-            if (_viewToViewModelMapping.TryGetValue(typeof(TView), out var viewModelType))
-            {
-                var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
-                view.DataContext = viewModel;
-            }
-            
-            // 3. Вызываем специальную инициализацию если есть
-            if (_viewInitializers.TryGetValue(typeof(TView), out var initializer))
-            {
-                initializer(view, scope.ServiceProvider);
-            }
-            
-            // 4. Показываем окно
-            ShowWindow(view);
+            scope.Dispose(); // Если View не создалась, сразу освобождаем ресурсы.
+            throw new InvalidOperationException($"View {typeof(TView)} not registered");
         }
+
+        // Подписываемся на событие закрытия окна, чтобы уничтожить scope.
+        view.Closed += (s, e) => scope.Dispose();
+
+        // 2. Получаем соответствующий ViewModel
+        if (_viewToViewModelMapping.TryGetValue(typeof(TView), out var viewModelType))
+        {
+            var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
+            view.DataContext = viewModel;
+        }
+        
+        // 3. Вызываем специальную инициализацию если есть
+        if (_viewInitializers.TryGetValue(typeof(TView), out var initializer))
+        {
+            initializer(view, scope.ServiceProvider);
+        }
+        
+        // 4. Показываем окно
+        ShowWindow(view);
     }
+    
     private void InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
     {
         if (window.DataContext is IHasSidebar sidebarContainer)
@@ -136,21 +145,6 @@ public class NavigationService : INavigationService
         }
         
         return null;
-    }
-    
-    public async Task LogoutAndNavigateToLoginAsync()
-    {
-        // Разрешаем зависимость здесь, по требованию, чтобы избежать циклической зависимости в конструкторе
-        var sessionProviderService = _serviceProvider.GetService<ISessionProviderService>();
-        if (sessionProviderService != null)
-        {
-            await sessionProviderService.LogoutAsync();
-        }
-
-        var tokenService = _serviceProvider.GetService<ITokenService>();
-        tokenService?.ClearTokens();
-        
-        NavigateTo<LoginView>();
     }
     
     private void ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)

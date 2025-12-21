@@ -7,9 +7,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
-            <!-- боковое меню -->
             <ColumnDefinition Width="*"/>
-            <!-- рабочая область -->
         </Grid.ColumnDefinitions>
 
         <!-- Навигационная панель -->
@@ -19,12 +17,11 @@
             <Button Content="Templates" Margin="10,5" Click="templates_Click"/>
             <Button Content="Users" Margin="10,5" Click="users_Click"/>
             <UserControl>
-                <controls:SidebarView/>
+                <controls:SidebarView DataContext="{Binding SidebarViewModel}"/>
             </UserControl>
             
         </StackPanel>
 
-        <!-- Основная рабочая область -->
         <ContentControl x:Name="ContentArea" Grid.Column="1" Margin="10"/>
     </Grid>
 </Window>

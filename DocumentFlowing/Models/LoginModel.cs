@@ -1,7 +1,5 @@
-using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
-using System.Windows;
 
 namespace DocumentFlowing.Models;
 
@@ -16,9 +14,11 @@ public class LoginModel
         _tokenService = tokenService;
     }
     
-    public async Task LoginAsync(string email, string password)
+    public async Task<int?> LoginAsync(string email, string password)
     {
-        await  _authorizationService.LoginAsync(email, password);
+        var roleId = await  _authorizationService.LoginAsync(email, password);
+        
+        return roleId;
     }
     
     public async Task<int?> LoginByRefreshTokenAsync()

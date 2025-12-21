@@ -23,8 +23,4 @@ public interface INavigationService
     /// </summary>
     /// <typeparam name="T">Окно</typeparam>
     bool? ShowDialog<T>() where T : Window;
-    /// <summary>
-    /// Метод для закрытия текущего окна и открытия окна входа
-    /// </summary>
-    Task LogoutAndNavigateToLoginAsync();
 }

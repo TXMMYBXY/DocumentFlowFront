@@ -4,7 +4,6 @@ using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
-using DocumentFlowing.Models;
 using System.Windows;
 
 namespace DocumentFlowing.Services;
@@ -67,7 +66,7 @@ public class AuthorizationService :  IAuthorizationService
         }
     }
 
-    public async Task LoginAsync(string email, string password)
+    public async Task<int?> LoginAsync(string email, string password)
     {
         try
         {
@@ -86,28 +85,17 @@ public class AuthorizationService :  IAuthorizationService
                 _tokenService.SaveTokens(response);
                 // LoginSuccessful?.Invoke(this, EventArgs.Empty);
 
-                // Открываем соответствующее окно на основе RoleId из ответа
-                if (response.UserInfo != null)
-                {
-                    Application.Current.MainWindow?.Close();
-                    _navigationService.NavigateToRole(response.UserInfo.RoleId);
-                }
-                else
-                {
-                    MessageBox.Show("Ошибка получения информации о пользователе.", "Ошибка",
-                        MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                return _tokenService.GetUserInfo().RoleId;
             }
-            else
-            {
-                MessageBox.Show("Неверный email или пароль.", "Ошибка входа",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+
+            return null;
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Произошла ошибка: {ex.Message}", "Ошибка",
             MessageBoxButton.OK, MessageBoxImage.Error);
+            
+            return null;
         }
     }
 }

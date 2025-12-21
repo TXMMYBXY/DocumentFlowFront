@@ -18,7 +18,7 @@ public class SidebarViewModel : BaseViewModel
     }
 
     public ICommand SettingsCommand { get; }
-    public ICommand LogoutCommand { get; }
+    public ICommand LogoutCommand { get; set; }
     
     private async Task ExecuteLogoutAsync()
     {

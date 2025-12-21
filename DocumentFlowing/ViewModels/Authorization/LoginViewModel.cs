@@ -3,6 +3,7 @@ using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.ViewModels.Base;
+using MahApps.Metro.Controls;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -31,7 +32,7 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
             async () =>
             {
                 IsLoading = true;
-                await _loginModel.LoginAsync(Email, Password);
+                _Login();
             },
             () =>
                 !string.IsNullOrWhiteSpace(Email)
@@ -98,6 +99,16 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
         catch (Exception ex)
         {
             Debug.WriteLine($"Auto-login failed: {ex.Message}");
+        }
+    }
+
+    private async Task _Login()
+    {
+        var roleId = await _loginModel.LoginAsync(Email, Password);
+
+        if (roleId != null)
+        {
+            _navigationService.NavigateToRole(roleId);
         }
     }
 }
