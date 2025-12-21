@@ -1,4 +1,5 @@
-﻿using DocumentFlowing.Client.Authorization.ViewModels;
+﻿using DocumentFlowing.Client.Authorization.Dtos;
+using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
@@ -16,49 +17,49 @@ public class TokenService : ITokenService
         _dpapiService = dpapiService;
     }
     
-    public void SaveTokens(LoginResponse loginResponse)
+    public void SaveTokens(LoginResponseDto loginResponseDto)
     {
         try
         {
-            if (loginResponse == null) return;
+            if (loginResponseDto == null) return;
 
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
             {
                 if (key == null) return;
 
                 // Сохраняем access token
-                if (!string.IsNullOrEmpty(loginResponse.AccessToken))
+                if (!string.IsNullOrEmpty(loginResponseDto.AccessToken))
                 {
-                    var encryptedAccessToken = _dpapiService.Encrypt(loginResponse.AccessToken);
+                    var encryptedAccessToken = _dpapiService.Encrypt(loginResponseDto.AccessToken);
                     key.SetValue("AccessToken", encryptedAccessToken);
-                    key.SetValue("AccessTokenExpires", loginResponse.ExpiresAt);
+                    key.SetValue("AccessTokenExpires", loginResponseDto.ExpiresAt);
                 }
 
                 // Сохраняем refresh token
-                if (loginResponse.RefreshToken != null && !string.IsNullOrEmpty(loginResponse.RefreshToken.Token))
+                if (loginResponseDto.RefreshTokenDto != null && !string.IsNullOrEmpty(loginResponseDto.RefreshTokenDto.Token))
                 {
-                    var encryptedRefreshToken = _dpapiService.Encrypt(loginResponse.RefreshToken.Token);
+                    var encryptedRefreshToken = _dpapiService.Encrypt(loginResponseDto.RefreshTokenDto.Token);
                     key.SetValue("RefreshToken", encryptedRefreshToken);
-                    key.SetValue("RefreshTokenExpires", loginResponse.RefreshToken.ExpiresAt);
+                    key.SetValue("RefreshTokenExpires", loginResponseDto.RefreshTokenDto.ExpiresAt);
                 }
 
                 // Сохраняем информацию о пользователе
-                if (loginResponse.UserInfo != null)
+                if (loginResponseDto.UserInfo != null)
                 {
-                    key.SetValue("UserEmail", loginResponse.UserInfo.Email);
-                    key.SetValue("UserFullName", loginResponse.UserInfo.FullName);
-                    key.SetValue("RoleId", loginResponse.UserInfo.RoleId);
-                    key.SetValue("DepartmentId", loginResponse.UserInfo.DepartmentId);
+                    key.SetValue("UserEmail", loginResponseDto.UserInfo.Email);
+                    key.SetValue("UserFullName", loginResponseDto.UserInfo.FullName);
+                    key.SetValue("RoleId", loginResponseDto.UserInfo.RoleId);
+                    key.SetValue("DepartmentId", loginResponseDto.UserInfo.DepartmentId);
 
                     // Сохраняем userId из refresh token
-                    if (loginResponse.RefreshToken != null)
+                    if (loginResponseDto.RefreshTokenDto != null)
                     {
-                        key.SetValue("UserId", loginResponse.RefreshToken.UserId);
+                        key.SetValue("UserId", loginResponseDto.RefreshTokenDto.UserId);
                     }
                 }
 
                 // Сохраняем тип токена
-                key.SetValue("TokenType", loginResponse.TokenType);
+                key.SetValue("TokenType", loginResponseDto.TokenType);
             }
         }
         catch (Exception ex)
@@ -91,7 +92,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Получаем access token
     public string GetAccessToken()
     {
         try
@@ -112,7 +112,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Получаем refresh token
     public string GetRefreshToken()
     {
         try
@@ -133,7 +132,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Получаем информацию о пользователе
     public UserInfoDto GetUserInfo()
     {
         try
@@ -160,7 +158,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Получаем userId
     public int? GetUserId()
     {
         try
@@ -178,7 +175,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Получаем refresh token id
     public int? GetRefreshTokenId()
     {
         try
@@ -196,8 +192,7 @@ public class TokenService : ITokenService
         }
     }
 
-    // Очищаем токены (логаут)
-    public static void ClearTokens()
+    public void ClearTokens()
     {
         try
         {
@@ -209,7 +204,6 @@ public class TokenService : ITokenService
         }
     }
 
-    // Проверяем, есть ли сохраненный токен
     public bool HasValidAccessToken()
     {
         try
@@ -230,11 +224,10 @@ public class TokenService : ITokenService
                             System.Globalization.CultureInfo.InvariantCulture,
                             System.Globalization.DateTimeStyles.None, out DateTime expiresAt))
                     {
-                        return expiresAt > DateTime.Now; // Добавляем буфер в 5 минут
+                        return expiresAt > DateTime.Now;
                     }
                     else
                     {
-                        // Если не удалось распарсить, пробуем стандартный формат
                         if (DateTime.TryParse(expiresAtStr, out expiresAt))
                         {
                             return expiresAt > DateTime.Now.AddMinutes(5);
@@ -250,8 +243,7 @@ public class TokenService : ITokenService
             return false;
         }
     }
-
-    // Проверяем срок действия refresh token
+    
     public bool IsRefreshTokenValid()
     {
         try

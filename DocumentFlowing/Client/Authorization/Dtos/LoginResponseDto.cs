@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
-public class LoginResponse
+namespace DocumentFlowing.Client.Authorization.Dtos;
+public class LoginResponseDto
 {
     [JsonPropertyName("userInfo")]
     public UserInfoDto UserInfo { get; set; }
@@ -12,5 +12,5 @@ public class LoginResponse
     [JsonPropertyName("tokenType")]
     public string TokenType { get; set; } = "Bearer";
     [JsonPropertyName("refreshToken")]
-    public RefreshToken RefreshToken { get; set; }
+    public RefreshTokenDto RefreshTokenDto { get; set; }
 }

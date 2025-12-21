@@ -20,11 +20,7 @@
 
             <Button Content="Documents" Margin="10,5" Click="documents_Click"/>
             <Button Content="Reports" Margin="10,5" Click="reports_Click"/>
-
-
-            <controls:SidebarControl x:Name="Sidebar"
-                            
-                            Grid.Column="0"/>
+            
         </StackPanel>
         
         <!-- Основная область -->

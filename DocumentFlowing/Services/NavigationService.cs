@@ -1,33 +1,184 @@
-using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.ViewModels.Admin;
+using DocumentFlowing.ViewModels.Authorization;
+using DocumentFlowing.ViewModels.Base;
+using DocumentFlowing.ViewModels.Controls;
 using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Authorization;
 using DocumentFlowing.Views.Boss;
 using DocumentFlowing.Views.Purchaser;
 using DocumentFlowing.Views.User;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace DocumentFlowing.Services;
 
 public class NavigationService : INavigationService
 {
+    private readonly IServiceProvider _serviceProvider;
+    private readonly Dictionary<Type, Type> _viewToViewModelMapping;
+    private readonly Dictionary<Type, Action<Window, IServiceProvider>> _viewInitializers;
+
+    public NavigationService(IServiceProvider serviceProvider)
+    {
+        _serviceProvider = serviceProvider;
+        
+        // Маппинг View -> ViewModel
+        _viewToViewModelMapping = new Dictionary<Type, Type>
+        {
+            { typeof(LoginView), typeof(LoginViewModel) },
+            { typeof(AdminMainView), typeof(AdminMainViewModel) },
+        };
+        
+        // Инициализаторы для View с SideBar
+        _viewInitializers = new Dictionary<Type, Action<Window, IServiceProvider>>
+        {
+            { typeof(AdminMainView), InitializeWindowWithSidebar },
+            { typeof(BossMainView), InitializeWindowWithSidebar },
+            { typeof(PurchaserMainView), InitializeWindowWithSidebar },
+            { typeof(UserMainView), InitializeWindowWithSidebar }
+        };
+    }
+    
     public void NavigateToRole(int? roleId)
     {
         switch (roleId)
         {
             case 1:
-                new AdminMainView().Show();
+                NavigateTo<AdminMainView>();
                 break;
             case 2:
-                new BossMainView().Show();
+                NavigateTo<BossMainView>();
                 break;
             case 3:
-                new PurchaserMainView().Show();
+                NavigateTo<PurchaserMainView>();
                 break;
             case 4:
-                new UserMainView().Show();
+                NavigateTo<UserMainView>();
                 break;
         }
+    }
+
+    private void ShowWindow(Window newWindow)
+    {
+        var currentWindow = Application.Current.MainWindow;
+        
+        newWindow.Show();
+        Application.Current.MainWindow = newWindow;
+        
+        if (currentWindow != null && currentWindow != newWindow)
+        {
+            currentWindow.Close();
+        }
+    }
+
+    public void NavigateTo<TView>() where TView : Window
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            // 1. Получаем View
+            var view = (TView)scope.ServiceProvider.GetService(typeof(TView));
+            
+            if (view == null) throw new InvalidOperationException($"View {typeof(TView)} not registered");
+            
+            // 2. Получаем соответствующий ViewModel
+            if (_viewToViewModelMapping.TryGetValue(typeof(TView), out var viewModelType))
+            {
+                var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
+                view.DataContext = viewModel;
+            }
+            
+            // 3. Вызываем специальную инициализацию если есть
+            if (_viewInitializers.TryGetValue(typeof(TView), out var initializer))
+            {
+                initializer(view, scope.ServiceProvider);
+            }
+            
+            // 4. Показываем окно
+            ShowWindow(view);
+        }
+    }
+    private void InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
+    {
+        if (window.DataContext is IHasSidebar sidebarContainer)
+        {
+            // Создаем SidebarViewModel и передаем в основной ViewModel
+            var sidebarViewModel = serviceProvider.GetService<SidebarViewModel>();
+            sidebarContainer.SidebarViewModel = sidebarViewModel;
+            
+            // Настраиваем Sidebar для конкретной роли
+            ConfigureSidebarForRole(sidebarViewModel, sidebarContainer);
+        }
+    }
+    
+    
+    public void CloseCurrentWindow()
+    {
+        Application.Current.MainWindow?.Close();
+    }
+
+    public bool? ShowDialog<T>() where T : Window
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var dialog = (Window)scope.ServiceProvider.GetService(typeof(T));
+            
+            if (dialog != null)
+            {
+                dialog.Owner = Application.Current.MainWindow;
+                dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                
+                return dialog.ShowDialog();
+            }
+        }
+        
+        return null;
+    }
+    
+    public async Task LogoutAndNavigateToLoginAsync()
+    {
+        // Разрешаем зависимость здесь, по требованию, чтобы избежать циклической зависимости в конструкторе
+        var sessionProviderService = _serviceProvider.GetService<ISessionProviderService>();
+        if (sessionProviderService != null)
+        {
+            await sessionProviderService.LogoutAsync();
+        }
+
+        var tokenService = _serviceProvider.GetService<ITokenService>();
+        tokenService?.ClearTokens();
+        
+        NavigateTo<LoginView>();
+    }
+    
+    private void ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)
+    {
+        // // Очищаем старые пункты меню
+        // sidebarViewModel.MenuItems.Clear();
+        //
+        // // Базовые пункты для всех
+        // sidebarViewModel.MenuItems.Add(new MenuItem
+        // {
+        //     Title = "Главная",
+        //     Command = new RelayCommand(() => { /* Навигация на главную */ })
+        // });
+        //
+        // // Добавляем специфичные пункты в зависимости от типа ViewModel
+        // if (mainViewModel is AdminMainViewModel)
+        // {
+        //     sidebarViewModel.MenuItems.Add(new MenuItem
+        //     {
+        //         Title = "Пользователи",
+        //         Command = new RelayCommand(() => { /* Открыть управление пользователями */ })
+        //     });
+        //     sidebarViewModel.MenuItems.Add(new MenuItem
+        //     {
+        //         Title = "Статистика",
+        //         Command = new RelayCommand(() => { /* Открыть статистику */ })
+        //     });
+        // }
+        // // ... для других ролей
     }
 }

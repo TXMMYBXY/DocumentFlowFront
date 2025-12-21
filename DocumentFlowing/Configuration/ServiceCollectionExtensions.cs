@@ -6,10 +6,16 @@ using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.Services;
+using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
+using DocumentFlowing.ViewModels.Controls;
 using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Authorization;
+using DocumentFlowing.Views.Boss;
+using DocumentFlowing.Views.Controls;
+using DocumentFlowing.Views.Purchaser;
+using DocumentFlowing.Views.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -37,6 +43,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IAuthorizationClient, AuthorizationClient>();
         services.AddScoped<IDpapiService, DpapiService>();
         services.AddScoped<INavigationService, NavigationService>();
+        services.AddScoped<ISessionProviderService, SessionProviderService>();
         
         // Models
         services.AddScoped<LoginModel>();
@@ -45,9 +52,15 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<MainWindow>();
         services.AddTransient<LoginView>();
         services.AddTransient<AdminMainView>();
+        services.AddTransient<SidebarView>();
+        services.AddTransient<BossMainView>();
+        services.AddTransient<PurchaserMainView>();
+        services.AddTransient<UserMainView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<SidebarViewModel>();
+        services.AddTransient<AdminMainViewModel>();
         
         return services;
     }

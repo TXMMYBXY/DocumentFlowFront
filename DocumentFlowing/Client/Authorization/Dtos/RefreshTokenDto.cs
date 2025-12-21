@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
-public class RefreshToken
+namespace DocumentFlowing.Client.Authorization.Dtos;
+public class RefreshTokenDto
 {
     [JsonPropertyName("token")]
     public string? Token { get; set; }

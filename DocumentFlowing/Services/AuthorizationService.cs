@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
@@ -13,15 +14,18 @@ public class AuthorizationService :  IAuthorizationService
     private readonly ITokenService _tokenService;
     private readonly IAuthorizationClient _authorizationClient;
     private readonly IMapper _mapper;
+    private readonly INavigationService _navigationService;
 
     public AuthorizationService(
         ITokenService tokenService, 
         IAuthorizationClient authorizationClient,
-        IMapper mapper)
+        IMapper mapper,
+        INavigationService navigationService)
     {
         _tokenService = tokenService;
         _authorizationClient = authorizationClient;
         _mapper = mapper;
+        _navigationService = navigationService;
     }
     public async Task<bool> TryAutoLoginAsync()
     {
@@ -43,7 +47,7 @@ public class AuthorizationService :  IAuthorizationService
 
                 if (refreshToken.IsAllowed)
                 {
-                    if (refreshToken.RefreshToken != null)
+                    if (refreshToken.RefreshTokenDto != null)
                     {
                         // Сохраняем новые токены
                         var refreshTokenResponseViewModel = _mapper.Map<RefreshTokenResponseViewModel>(refreshToken);
@@ -67,13 +71,13 @@ public class AuthorizationService :  IAuthorizationService
     {
         try
         {
-            var loginRequest = new LoginRequest
+            var loginRequest = new LoginRequestDto
             {
                 Email = email,
                 Password = password
             };
 
-            var response = await _authorizationClient.LoginAsync<LoginRequest, LoginResponse>(
+            var response = await _authorizationClient.LoginAsync<LoginRequestDto, LoginResponseDto>(
                 loginRequest, "authorization/login");
 
             if (response != null && !string.IsNullOrEmpty(response.AccessToken))
@@ -85,8 +89,8 @@ public class AuthorizationService :  IAuthorizationService
                 // Открываем соответствующее окно на основе RoleId из ответа
                 if (response.UserInfo != null)
                 {
-                    // _navigationService.NavigateToRole(response.UserInfo.RoleId);
                     Application.Current.MainWindow?.Close();
+                    _navigationService.NavigateToRole(response.UserInfo.RoleId);
                 }
                 else
                 {

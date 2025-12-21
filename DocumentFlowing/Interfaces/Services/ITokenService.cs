@@ -1,3 +1,4 @@
+using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Models;
 
@@ -11,7 +12,7 @@ public interface ITokenService
     /// <summary>
     /// Сохраняет токены
     /// </summary>
-    void SaveTokens(LoginResponse loginResponse);
+    void SaveTokens(LoginResponseDto loginResponseDto);
     
     /// <summary>
     /// Сохраняет токен обновления
@@ -42,6 +43,10 @@ public interface ITokenService
     /// </summary>
     bool IsRefreshTokenValid();
     
+    /// <summary>
+    /// Очищает реестр от токенов
+    /// </summary>
+    void ClearTokens();
     //Пока не используются
     int? GetRefreshTokenId();
     int? GetUserId();

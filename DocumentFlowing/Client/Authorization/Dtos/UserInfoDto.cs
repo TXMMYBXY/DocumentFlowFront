@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Client.Authorization.Dtos;
 public class UserInfoDto
 {
     [JsonPropertyName("fullName")]

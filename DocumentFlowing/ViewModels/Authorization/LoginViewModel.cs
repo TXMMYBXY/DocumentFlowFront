@@ -81,7 +81,7 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     }
 
     
-    private async Task InitializeAsync()
+    public async Task InitializeAsync()
     {
         try
         {

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
-public class LoginRequest
+namespace DocumentFlowing.Client.Authorization.Dtos;
+public class LoginRequestDto
 {
     [JsonPropertyName("email")]
     public string Email { get; set; } = string.Empty;
