@@ -1,5 +1,9 @@
-﻿using DocumentFlowing.Views;
+﻿using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
+using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Views;
 using DocumentFlowing.Views.Admin;
+using DocumentFlowing.Views.Authorization;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -10,8 +14,12 @@ namespace DocumentFlowing
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly IAuthorizationClient _authorizationClient;
+        private readonly ITokenService _tokenService;
+        public MainWindow(IAuthorizationClient authorizationClient,  ITokenService tokenService)
         {
+            _authorizationClient = authorizationClient;
+            _tokenService = tokenService;
             InitializeComponent();
             ContentArea.Content = new TextBlock
             {
@@ -24,7 +32,7 @@ namespace DocumentFlowing
 
         private void loginClick(object sender, RoutedEventArgs e)
         {
-            new LoginView().Show();
+            
             Close();
         }
 

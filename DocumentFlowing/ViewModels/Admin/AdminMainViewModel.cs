@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.ViewModels.Base;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace DocumentFlowing.ViewModels.Admin
 {
-    public class AdminMainViewModel : INotifyPropertyChanged
+    public class AdminMainViewModel : MainViewModelBase
     {
         private object _currentView;
+        private readonly INavigationService _navigationService;
+        
         public object CurrentView
         {
             get => _currentView;

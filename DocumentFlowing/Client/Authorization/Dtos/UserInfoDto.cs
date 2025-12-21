@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Client.Authorization.Dtos;
 public class UserInfoDto
 {
     [JsonPropertyName("fullName")]

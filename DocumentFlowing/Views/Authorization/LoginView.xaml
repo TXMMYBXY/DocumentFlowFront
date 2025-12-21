@@ -1,0 +1,62 @@
+﻿<Window x:Class="DocumentFlowing.Views.Authorization.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:common="clr-namespace:DocumentFlowing.Common"
+        Title="DocumentFlowing — Login"
+        Height="400"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F4F6F8"
+
+        Icon="C:\Users\myuch\source\repos\DocumentFlowing\DocumentFlowFront\DocumentFlowing\Assets\icon.png">
+    <Window.Resources>
+        <common:InvertBoolConverter x:Key="InvertBoolConverter"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+    <Grid x:Name="MainGrid">
+        <StackPanel HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Width="300">
+
+            <TextBlock Text="Добро пожаловать"
+                       FontSize="18"
+                       FontWeight="Bold"
+                       Margin="0,0,0,20"
+                       HorizontalAlignment="Center"/>
+
+            <TextBox x:Name="LoginBox"
+                     Text = "{Binding Email}"
+                     mah:TextBoxHelper.Watermark="Email"
+                     Margin="0,5"
+                     Height="35"/>
+
+            <PasswordBox x:Name="PasswordBox"
+                         mah:TextBoxHelper.Watermark="Password"
+                         mah:PasswordBoxBindingBehavior.Password="{Binding Password}"
+                         Margin="0,5"
+                         Height="35"/>
+
+            <Grid Margin="0,20,0,10" Height="35">
+
+                <Button x:Name="LoginButton"
+                        Command="{Binding LoginCommand}"
+                        Content="{Binding LoginButtonText}"
+                        IsEnabled="{Binding IsLoading, Converter={StaticResource InvertBoolConverter}}"
+                        Background="#2E3A59"
+                        Foreground="White"
+                        Height="35"/>
+
+                <mah:ProgressRing IsActive="{Binding IsLoading}"
+                                  Width="20" Height="20"
+                                  VerticalAlignment="Center"
+                                  HorizontalAlignment="Center"
+                                  Foreground="Gold"
+                                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </Grid>
+            
+        </StackPanel>
+    </Grid>
+</Window>

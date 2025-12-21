@@ -12,14 +12,14 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace DocumentFlowing.Views.Employee
+namespace DocumentFlowing.Views.User
 {
     /// <summary>
     /// Логика взаимодействия для EmployeeMainView.xaml
     /// </summary>
-    public partial class EmployeeMainView : Window
+    public partial class UserMainView : Window
     {
-        public EmployeeMainView()
+        public UserMainView()
         {
             InitializeComponent();
         }
