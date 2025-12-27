@@ -101,6 +101,7 @@ public class TokenService : ITokenService
                 if (key == null) return null;
 
                 var encryptedToken = key.GetValue("AccessToken") as string;
+                
                 if (string.IsNullOrEmpty(encryptedToken)) return null;
 
                 return _dpapiService.Decrypt(encryptedToken);
@@ -204,7 +205,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public bool HasValidAccessToken()
+    public bool IsAccessTokenValid()
     {
         try
         {

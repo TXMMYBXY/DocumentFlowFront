@@ -35,8 +35,7 @@ public class AuthorizationService :  IAuthorizationService
                 RefreshToken = _tokenService.GetRefreshToken()
             };
             
-            
-            if (!string.IsNullOrEmpty(request.RefreshToken) && _tokenService.IsRefreshTokenValid())
+            if (!string.IsNullOrEmpty(request.RefreshToken))
             {
                 // Запрос к API за доступом
                 

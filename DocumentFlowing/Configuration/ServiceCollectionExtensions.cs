@@ -1,5 +1,7 @@
 using DocumentFlowing.Client;
+using DocumentFlowing.Client.Admin;
 using DocumentFlowing.Client.Authorization;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Helpers;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
@@ -18,6 +20,7 @@ using DocumentFlowing.Views.Purchaser;
 using DocumentFlowing.Views.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DocumentFlowing.Configuration;
 
@@ -35,6 +38,24 @@ public static class ServiceCollectionExtensions
         {
             cfg.AddMaps(typeof(AuthorizationMappingProfile).Assembly);
         });
+        
+        // Client
+        services.AddTransient<AuthorizationHandler>();
+        
+        services.AddHttpClient<IAuthorizationClient, AuthorizationClient>()
+            .ConfigureHttpClient((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
+                // client.Timeout = TimeSpan.FromSeconds(10);
+            });
+        
+        services.AddHttpClient<IAdminClient, AdminClient>()
+            .AddHttpMessageHandler<AuthorizationHandler>()
+            .ConfigureHttpClient((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
+                // client.Timeout = TimeSpan.FromSeconds(30);
+            });
 
         // Services
         services.AddScoped<IGeneralClient, GeneralClient>();
@@ -44,6 +65,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDpapiService, DpapiService>();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<ISessionProviderService, SessionProviderService>();
+
         
         // Models
         services.AddScoped<LoginModel>();

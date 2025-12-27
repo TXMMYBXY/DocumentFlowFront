@@ -80,9 +80,22 @@ public class GeneralClient : IGeneralClient
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ErrorResponse>(errorContent);
+            var result = new ErrorResponse();
+            try
+            {
+                result =
+                    JsonSerializer.Deserialize<ErrorResponse>(errorContent); //TODO FIX:exception in json convert
 
-            // Передаём статус-код в конструктор HttpRequestException
+            }
+            catch (JsonException ex)
+            {
+                throw new HttpRequestException(
+                    $"Request failed with status {response.StatusCode}",
+                    null,
+                    response.StatusCode
+                );
+            }
+            
             throw new HttpRequestException(
                 $"Request failed with status {response.StatusCode}, message: {result.Message}",
                 null,
