@@ -11,7 +11,7 @@
         ResizeMode="NoResize"
         Background="#F4F6F8"
 
-        Icon="C:\Users\myuch\source\repos\DocumentFlowing\DocumentFlowFront\DocumentFlowing\Assets\icon.png">
+        Icon="/Assets/icon.png">
     <Window.Resources>
         <common:InvertBoolConverter x:Key="InvertBoolConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
