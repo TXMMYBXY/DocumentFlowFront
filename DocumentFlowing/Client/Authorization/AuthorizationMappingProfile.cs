@@ -1,4 +1,5 @@
 using AutoMapper;
+using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Client.Authorization.ViewModels;
 using System.DirectoryServices.ActiveDirectory;
 
@@ -12,5 +13,7 @@ public class AuthorizationMappingProfile : Profile
             .ForMember(dest => dest.ExpiresAt, opt => opt.MapFrom(src => src.RefreshTokenDto.ExpiresAt))
             .ForMember(dest => dest.Token, opt => opt.MapFrom(src => src.RefreshTokenDto.Token))
             .ReverseMap();
+
+        CreateMap<AccessTokenViewModelResponse, LoginResponseDto>().ReverseMap();
     }
 }

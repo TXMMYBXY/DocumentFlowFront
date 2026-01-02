@@ -19,7 +19,7 @@ public class AuthorizationHandler : DelegatingHandler
         
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var token = _tokenService.GetAccessToken();
+        var token = _tokenService.ReturnAccessToken();
 
         if (!string.IsNullOrEmpty(token))
         {
@@ -28,10 +28,10 @@ public class AuthorizationHandler : DelegatingHandler
         
         var response =  await base.SendAsync(request, cancellationToken);
 
-        // if (response.StatusCode == HttpStatusCode.Unauthorized)
-        // {
-        //     return await _HandleUnauthorizedResponse(request, cancellationToken, response);
-        // }
+        if (response.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            return await _HandleUnauthorizedResponse(request, cancellationToken, response);
+        }
 
         return response;
     }
@@ -62,7 +62,7 @@ public class AuthorizationHandler : DelegatingHandler
                 try
                 {
                     // Используем существующий метод из сервиса для обновления токена
-                    var refreshed = _tokenService.GetRefreshToken();
+                    var refreshed = _tokenService.ReturnRefreshToken();
                     
                     if (string.IsNullOrEmpty(refreshed))
                     {
@@ -81,7 +81,7 @@ public class AuthorizationHandler : DelegatingHandler
         }
         
         // Получаем новый токен
-        var newToken = _tokenService.GetAccessToken();
+        var newToken = await _tokenService.GetNewAccessToken();
         
         if (string.IsNullOrEmpty(newToken))
         {

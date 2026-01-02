@@ -21,4 +21,9 @@ public class AuthorizationClient : GeneralClient, IAuthorizationClient
     {
         return await PostResponseAsync<TRequest, TResponse>(request, uri);
     }
+
+    public async Task<TResponse> GetNewAccessTokenAsync<TRequest, TResponse>(TRequest request, string uri)
+    {
+        return await PostResponseAsync<TRequest, TResponse>(request, uri);
+    }
 }

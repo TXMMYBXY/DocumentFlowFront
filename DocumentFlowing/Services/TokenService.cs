@@ -1,5 +1,7 @@
-﻿using DocumentFlowing.Client.Authorization.Dtos;
+﻿using AutoMapper;
+using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Client.Authorization.ViewModels;
+using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
@@ -11,10 +13,17 @@ public class TokenService : ITokenService
 {
     private const string RegistryPath = @"Software\DocumentFlowing\Tokens";
     private readonly IDpapiService _dpapiService;
+    private readonly IAuthorizationClient _authorizationClient;
+    private readonly IMapper _mapper;
 
-    public TokenService(IDpapiService dpapiService)
+    public TokenService(
+        IDpapiService dpapiService, 
+        IAuthorizationClient authorizationClient,
+        IMapper mapper)
     {
         _dpapiService = dpapiService;
+        _authorizationClient = authorizationClient;
+        _mapper = mapper;
     }
     
     public void SaveTokens(LoginResponseDto loginResponseDto)
@@ -92,7 +101,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public string GetAccessToken()
+    public string ReturnAccessToken()
     {
         try
         {
@@ -113,7 +122,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public string GetRefreshToken()
+    public string ReturnRefreshToken()
     {
         try
         {
@@ -176,6 +185,32 @@ public class TokenService : ITokenService
         }
     }
 
+    public async Task<string> GetNewAccessToken()
+    {
+        var request = new AccessTokenViewModelRequest
+        {
+            RefreshToken = ReturnRefreshToken(),
+            UserId = GetUserId()
+        };
+
+        if (string.IsNullOrEmpty(request.RefreshToken))
+        {
+            throw new NullReferenceException("Refresh token is out");
+        }
+        
+        var token = await _authorizationClient
+            .GetNewAccessTokenAsync<AccessTokenViewModelRequest, AccessTokenViewModelResponse>(request, "authorization/access");
+
+        if (token == null)
+        {
+            throw new NullReferenceException("Refresh token is not got");
+        }
+        
+        SaveTokens(_mapper.Map<LoginResponseDto>(token));
+
+        return token.AccessToken;
+    }
+
     public int? GetRefreshTokenId()
     {
         try
@@ -209,7 +244,7 @@ public class TokenService : ITokenService
     {
         try
         {
-            var token = GetAccessToken();
+            var token = ReturnAccessToken();
             if (string.IsNullOrEmpty(token)) return false;
 
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))

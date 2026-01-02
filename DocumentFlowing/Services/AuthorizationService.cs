@@ -32,7 +32,7 @@ public class AuthorizationService :  IAuthorizationService
         {
             var request = new RefreshTokenToLoginRequestViewModel
             {
-                RefreshToken = _tokenService.GetRefreshToken()
+                RefreshToken = _tokenService.ReturnRefreshToken()
             };
             
             if (!string.IsNullOrEmpty(request.RefreshToken))
@@ -96,5 +96,10 @@ public class AuthorizationService :  IAuthorizationService
             
             return null;
         }
+    }
+
+    public async Task<AccessTokenViewModelResponse> GetNewAccessTokenAsync(AccessTokenViewModelRequest accessTokenViewModelRequest)
+    {
+        throw new NotImplementedException();
     }
 }
