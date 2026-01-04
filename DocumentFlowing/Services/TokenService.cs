@@ -168,7 +168,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public int? GetUserId()
+    private int? _GetUserId()
     {
         try
         {
@@ -185,12 +185,12 @@ public class TokenService : ITokenService
         }
     }
 
-    public async Task<string> GetNewAccessToken()
+    public async Task<string> GetNewAccessTokenAsync()
     {
         var request = new AccessTokenViewModelRequest
         {
             RefreshToken = ReturnRefreshToken(),
-            UserId = GetUserId()
+            UserId = _GetUserId()
         };
 
         if (string.IsNullOrEmpty(request.RefreshToken))
@@ -198,12 +198,11 @@ public class TokenService : ITokenService
             throw new NullReferenceException("Refresh token is out");
         }
         
-        var token = await _authorizationClient
-            .GetNewAccessTokenAsync<AccessTokenViewModelRequest, AccessTokenViewModelResponse>(request, "authorization/access");
+        var token = await _authorizationClient.GetNewAccessTokenAsync(request, "authorization/access");
 
         if (token == null)
         {
-            throw new NullReferenceException("Refresh token is not got");
+            throw new NullReferenceException("Access token is not got");
         }
         
         SaveTokens(_mapper.Map<LoginResponseDto>(token));
@@ -211,23 +210,24 @@ public class TokenService : ITokenService
         return token.AccessToken;
     }
 
-    public int? GetRefreshTokenId()
+    public async Task GetNewRefreshTokenAsync()
     {
-        try
+        var request = new RefreshTokenViewModelRequest
         {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
-            {
-                if (key == null) return null;
+            UserId = _GetUserId(),
+            Token = ReturnRefreshToken()
+        };
 
-                return key.GetValue("RefreshTokenId") as int?;
-            }
-        }
-        catch
+        if (request.UserId == null && string.IsNullOrEmpty(request.Token))
         {
-            return null;
+            throw new NullReferenceException("Refresh token is out");
         }
+        
+        var token = await _authorizationClient.GetNewRefreshTokenAsync(request, "authorization/refresh");
+        
+        SaveRefreshToken(token);
     }
-
+    
     public void ClearTokens()
     {
         try

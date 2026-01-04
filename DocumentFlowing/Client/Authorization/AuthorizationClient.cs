@@ -1,3 +1,5 @@
+using DocumentFlowing.Client.Authorization.Dtos;
+using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Client.Models;
 using DocumentFlowing.Interfaces.Client;
 using Microsoft.Extensions.Options;
@@ -12,18 +14,23 @@ public class AuthorizationClient : GeneralClient, IAuthorizationClient
     {
     }
 
-    public async Task<TResponse> LoginAsync<TRequest, TResponse>(TRequest request, string uri)
+    public async Task<LoginResponseDto> LoginAsync(LoginRequestDto request, string uri)
     {
-        return await PostResponseAsync<TRequest, TResponse>(request, uri);
+        return await PostResponseAsync<LoginRequestDto, LoginResponseDto>(request, uri);
     }
 
-    public async Task<TResponse> RequestForAccessAsync<TRequest, TResponse>(TRequest request, string uri)
+    public async Task<RefreshTokenToLoginResponseViewModel> RequestForAccessAsync(RefreshTokenToLoginRequestViewModel request, string uri)
     {
-        return await PostResponseAsync<TRequest, TResponse>(request, uri);
+        return await PostResponseAsync<RefreshTokenToLoginRequestViewModel, RefreshTokenToLoginResponseViewModel>(request, uri);
     }
 
-    public async Task<TResponse> GetNewAccessTokenAsync<TRequest, TResponse>(TRequest request, string uri)
+    public async Task<AccessTokenViewModelResponse> GetNewAccessTokenAsync(AccessTokenViewModelRequest request, string uri)
     {
-        return await PostResponseAsync<TRequest, TResponse>(request, uri);
+        return await PostResponseAsync<AccessTokenViewModelRequest, AccessTokenViewModelResponse>(request, uri);
+    }
+
+    public async Task<RefreshTokenResponseViewModel> GetNewRefreshTokenAsync(RefreshTokenViewModelRequest request, string uri)
+    {
+        return await PostResponseAsync<RefreshTokenViewModelRequest, RefreshTokenResponseViewModel>(request, uri);
     }
 }

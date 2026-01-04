@@ -52,9 +52,10 @@ public interface ITokenService
     /// <summary>
     /// Получить новый токен доступа
     /// </summary>
-    Task<string> GetNewAccessToken();
+    Task<string> GetNewAccessTokenAsync();
     
-    //Пока не используются
-    int? GetRefreshTokenId();
-    int? GetUserId();
+    /// <summary>
+    /// Получить новый токен обновления
+    /// </summary>
+    Task GetNewRefreshTokenAsync();
 }

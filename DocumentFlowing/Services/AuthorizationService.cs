@@ -40,18 +40,10 @@ public class AuthorizationService :  IAuthorizationService
                 // Запрос к API за доступом
                 
                 var refreshToken 
-                    = await _authorizationClient.RequestForAccessAsync<RefreshTokenToLoginRequestViewModel, RefreshTokenToLoginResponseViewModel>
-                        (request, "authorization/request-for-access");
+                    = await _authorizationClient.RequestForAccessAsync(request, "authorization/request-for-access");
 
                 if (refreshToken.IsAllowed)
                 {
-                    if (refreshToken.RefreshTokenDto != null)
-                    {
-                        // Сохраняем новые токены
-                        var refreshTokenResponseViewModel = _mapper.Map<RefreshTokenResponseViewModel>(refreshToken);
-                        _tokenService.SaveRefreshToken(refreshTokenResponseViewModel);
-                    }
-
                     return true;
                 }
             }
@@ -75,8 +67,7 @@ public class AuthorizationService :  IAuthorizationService
                 Password = password
             };
 
-            var response = await _authorizationClient.LoginAsync<LoginRequestDto, LoginResponseDto>(
-                loginRequest, "authorization/login");
+            var response = await _authorizationClient.LoginAsync(loginRequest, "authorization/login");
 
             if (response != null && !string.IsNullOrEmpty(response.AccessToken))
             {
@@ -96,10 +87,5 @@ public class AuthorizationService :  IAuthorizationService
             
             return null;
         }
-    }
-
-    public async Task<AccessTokenViewModelResponse> GetNewAccessTokenAsync(AccessTokenViewModelRequest accessTokenViewModelRequest)
-    {
-        throw new NotImplementedException();
     }
 }

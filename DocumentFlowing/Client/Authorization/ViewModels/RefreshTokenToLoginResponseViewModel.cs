@@ -8,6 +8,4 @@ public class RefreshTokenToLoginResponseViewModel
 {
     [JsonPropertyName("isAllowed")]
     public bool IsAllowed { get; set; }
-    [JsonPropertyName("refreshToken")]
-    public RefreshTokenDto RefreshTokenDto { get; set; }
 }

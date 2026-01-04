@@ -81,7 +81,7 @@ public class AuthorizationHandler : DelegatingHandler
         }
         
         // Получаем новый токен
-        var newToken = await _tokenService.GetNewAccessToken();
+        var newToken = await _tokenService.GetNewAccessTokenAsync();
         
         if (string.IsNullOrEmpty(newToken))
         {
