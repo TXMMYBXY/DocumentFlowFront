@@ -58,4 +58,6 @@ public interface ITokenService
     /// Получить новый токен обновления
     /// </summary>
     Task GetNewRefreshTokenAsync();
+
+    bool IsRefreshTokenExpires();
 }

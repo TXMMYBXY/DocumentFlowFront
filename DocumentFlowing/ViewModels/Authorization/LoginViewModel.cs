@@ -77,6 +77,7 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     {
         try
         {
+            await _loginModel.CheckRefreshTokenExipredAsync();
             var roleId = await _loginModel.LoginByRefreshTokenAsync();
             if (roleId.HasValue)
             {

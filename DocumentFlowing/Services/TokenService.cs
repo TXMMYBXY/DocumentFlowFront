@@ -227,7 +227,31 @@ public class TokenService : ITokenService
         
         SaveRefreshToken(token);
     }
-    
+
+    public bool IsRefreshTokenExpires()
+    {
+        try
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
+            {
+                if (key == null) return false;
+
+                var expiresAtStr = key.GetValue("RefreshTokenExpires") as string;
+                if (!string.IsNullOrEmpty(expiresAtStr) &&
+                    DateTime.TryParse(expiresAtStr, out DateTime expiresAt))
+                {
+                    return expiresAt - DateTime.UtcNow < TimeSpan.FromDays(1);
+                }
+
+                return false;
+            }
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
     public void ClearTokens()
     {
         try
