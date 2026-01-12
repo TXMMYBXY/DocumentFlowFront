@@ -45,7 +45,7 @@ namespace DocumentFlowing.ViewModels.Admin
         private void ShowUsers()
         {
             var usersView = new Views.Controls.UserView();
-            usersView.DataContext = new UserViewModel(_adminClient);
+            usersView.DataContext = new UserViewModel(_adminClient, _navigationService);
             CurrentView = usersView;
         }
     }

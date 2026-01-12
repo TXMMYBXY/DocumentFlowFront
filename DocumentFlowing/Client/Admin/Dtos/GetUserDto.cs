@@ -1,9 +1,9 @@
 using DocumentFlowing.Models;
 using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Client.Admin.ViewModels;
+namespace DocumentFlowing.Client.Admin.Dtos;
 
-public class GetUserViewModel
+public class GetUserDto
 {
     [JsonPropertyName("id")]
     public int Id { get; set; }
@@ -15,10 +15,9 @@ public class GetUserViewModel
     public string PasswordHash { get; set; }
     [JsonPropertyName("isActive")]
     public bool IsActive { get; set; }
+    [JsonPropertyName("department")]
+    public string Department { get; set; }
     [JsonPropertyName("role")]
     public Role RoleEntity { get; set; }
-    [JsonPropertyName("department")]
-    public Department DepartmentEntity { get; set; }
     public string Role => RoleEntity.Title;
-    public string Department => DepartmentEntity.Title;
 }

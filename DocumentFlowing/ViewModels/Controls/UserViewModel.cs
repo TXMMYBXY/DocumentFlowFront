@@ -1,6 +1,7 @@
-using DocumentFlowing.Client.Admin.ViewModels;
+using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -10,12 +11,12 @@ namespace DocumentFlowing.ViewModels.Controls;
 
 public class UserViewModel : BaseViewModel
 {
-    private ObservableCollection<GetUserViewModel> _users = new();
+    private ObservableCollection<GetUserDto> _users = new();
     private readonly UserModel _userModel;
     private bool _isLoading;
     private string _errorMessage;
         
-    public ObservableCollection<GetUserViewModel> Users
+    public ObservableCollection<GetUserDto> Users
     {
         get => _users;
         set => SetField(ref _users, value);
@@ -37,13 +38,14 @@ public class UserViewModel : BaseViewModel
     public ICommand RefreshCommand { get; }
     public ICommand ActivateDeactivateUserCommand { get; }
         
-    public UserViewModel(IAdminClient adminClient)
+    public UserViewModel(IAdminClient adminClient, INavigationService navigationService)
     {
-        _userModel = new UserModel(adminClient);
-            
+        _userModel = new UserModel(adminClient, navigationService);
+  
         // Инициализация команд
+        AddUserCommand = new RelayCommand(() =>  _userModel.OpenModalWindowCreateUser());
         RefreshCommand = new RelayCommand(async () => await _LoadUsersAsync());
-            
+
         // Запускаем загрузку, но не блокируем конструктор
         _ = _InitializeAsync();
     }
@@ -52,7 +54,7 @@ public class UserViewModel : BaseViewModel
     {
         await _LoadUsersAsync();
     }
-        
+
     private async Task _LoadUsersAsync()
     {
         try

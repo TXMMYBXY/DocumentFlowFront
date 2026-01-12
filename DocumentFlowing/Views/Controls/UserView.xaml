@@ -23,6 +23,24 @@
                     <Setter Property="Foreground" Value="Gray"/>
                     <Setter Property="Opacity" Value="0.7"/>
                 </DataTrigger>
+                <!-- Триггер для наведения курсора -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <!-- Триггер для выбранной строки -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#B0C4DE"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <!-- Триггер для неактивной выбранной строки -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsActive}" Value="False"/>
+                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="#333333"/>
+                </MultiDataTrigger>
             </Style.Triggers>
         </Style>
     </UserControl.Resources>

@@ -1,5 +1,3 @@
-using DocumentFlowing.Common;
-using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
@@ -13,7 +11,6 @@ using DocumentFlowing.Views.Purchaser;
 using DocumentFlowing.Views.User;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace DocumentFlowing.Services;
 
@@ -33,6 +30,7 @@ public class NavigationService : INavigationService
             { typeof(LoginView), typeof(LoginViewModel) },
             { typeof(AdminMainView), typeof(AdminMainViewModel) },
             { typeof(BossMainView), typeof(BossMainViewModel) },
+            {typeof(CreateUserView), typeof(CreateUserViewModel)}
         };
         
         // Инициализаторы для View с SideBar
@@ -79,36 +77,29 @@ public class NavigationService : INavigationService
 
     public void NavigateTo<TView>() where TView : Window
     {
-        // Убираем 'using', чтобы scope не уничтожался сразу после выхода из метода.
-        // Scope должен жить столько же, сколько и созданное им окно.
         var scope = _serviceProvider.CreateScope();
         
-        // 1. Получаем View
         var view = (TView)scope.ServiceProvider.GetService(typeof(TView));
         
         if (view == null)
         {
-            scope.Dispose(); // Если View не создалась, сразу освобождаем ресурсы.
+            scope.Dispose();
             throw new InvalidOperationException($"View {typeof(TView)} not registered");
         }
 
-        // Подписываемся на событие закрытия окна, чтобы уничтожить scope.
         view.Closed += (s, e) => scope.Dispose();
 
-        // 2. Получаем соответствующий ViewModel
         if (_viewToViewModelMapping.TryGetValue(typeof(TView), out var viewModelType))
         {
             var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
             view.DataContext = viewModel;
         }
         
-        // 3. Вызываем специальную инициализацию если есть
         if (_viewInitializers.TryGetValue(typeof(TView), out var initializer))
         {
             initializer(view, scope.ServiceProvider);
         }
         
-        // 4. Показываем окно
         ShowWindow(view);
     }
     
@@ -133,20 +124,52 @@ public class NavigationService : INavigationService
 
     public bool? ShowDialog<T>() where T : Window
     {
-        using (var scope = _serviceProvider.CreateScope())
-        {
-            var dialog = (Window)scope.ServiceProvider.GetService(typeof(T));
-            
-            if (dialog != null)
-            {
-                dialog.Owner = Application.Current.MainWindow;
-                dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-                
-                return dialog.ShowDialog();
-            }
-        }
+        // Создаем scope для диалогового окна
+        var scope = _serviceProvider.CreateScope();
         
-        return null;
+        try
+        {
+            // 1. Получаем диалоговое окно
+            var dialog = scope.ServiceProvider.GetService(typeof(T)) as Window;
+            
+            if (dialog == null)
+            {
+                scope.Dispose();
+                throw new InvalidOperationException($"Dialog {typeof(T)} not registered");
+            }
+
+            // 2. Получаем соответствующий ViewModel из маппинга
+            if (_viewToViewModelMapping.TryGetValue(typeof(T), out var viewModelType))
+            {
+                var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
+                if (viewModel != null)
+                {
+                    dialog.DataContext = viewModel;
+
+                    // Если ViewModel - это диалоговая ViewModel, подписываемся на событие закрытия
+                    if (viewModel is IDialogService dialogViewModel)
+                    {
+                        dialogViewModel.DialogClosed += _ => dialog.Close();
+                    }
+                }
+            }
+
+            // 3. Подписываемся на закрытие окна для освобождения ресурсов
+            dialog.Closed += (s, e) => scope.Dispose();
+
+            // 4. Настраиваем окно как диалоговое
+            dialog.Owner = Application.Current.MainWindow;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            
+            // 5. Показываем диалог
+            return dialog.ShowDialog();
+        }
+        catch
+        {
+            // В случае ошибки освобождаем ресурсы
+            scope.Dispose();
+            throw;
+        }
     }
     
     private void ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)

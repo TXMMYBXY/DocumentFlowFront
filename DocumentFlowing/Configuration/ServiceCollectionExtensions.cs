@@ -78,12 +78,14 @@ public static class ServiceCollectionExtensions
         services.AddTransient<BossMainView>();
         services.AddTransient<PurchaserMainView>();
         services.AddTransient<UserMainView>();
+        services.AddTransient<CreateUserView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
         services.AddTransient<SidebarViewModel>();
         services.AddTransient<AdminMainViewModel>();
         services.AddTransient<BossMainViewModel>();
+        services.AddTransient<CreateUserViewModel>();
         
         return services;
     }
