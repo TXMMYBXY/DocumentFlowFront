@@ -58,6 +58,8 @@ public interface ITokenService
     /// Получить новый токен обновления
     /// </summary>
     Task GetNewRefreshTokenAsync();
-
+    /// <summary>
+    /// Проверка срока жизни токена обновления. true если срок меньше 1 дня
+    /// </summary>
     bool IsRefreshTokenExpires();
 }

@@ -106,6 +106,13 @@ namespace DocumentFlowing.ViewModels.Admin
             private set => SetField(ref _canCreate, value);
         }
         
+        private bool _showPasswordMismatchError;
+        public bool ShowPasswordMismatchError
+        {
+            get => _showPasswordMismatchError;
+            set => SetField(ref _showPasswordMismatchError, value);
+        }
+        
         // Команды
         public ICommand CreateCommand { get; }
         public ICommand CancelCommand { get; }
@@ -192,15 +199,12 @@ namespace DocumentFlowing.ViewModels.Admin
                 return;
             }
             
-            if (!string.IsNullOrEmpty(Password) && !string.IsNullOrEmpty(ConfirmPassword) && Password != ConfirmPassword)
-            {
-                ErrorMessage = "Пароли не совпадают";
-                CanCreate = false;
-                return;
-            }
+            // Проверка на совпадение паролей
+            ShowPasswordMismatchError = !string.IsNullOrEmpty(ConfirmPassword) && Password != ConfirmPassword;
             
             // Проверка обязательных полей
-            CanCreate = !string.IsNullOrWhiteSpace(Email) &&
+            CanCreate = !ShowPasswordMismatchError &&
+                       !string.IsNullOrWhiteSpace(Email) &&
                        !string.IsNullOrWhiteSpace(Password) &&
                        !string.IsNullOrWhiteSpace(FullName) &&
                        !string.IsNullOrWhiteSpace(Department) &&

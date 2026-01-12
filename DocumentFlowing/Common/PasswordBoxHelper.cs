@@ -10,7 +10,14 @@ namespace DocumentFlowing.Common
                 "BoundPassword",
                 typeof(string),
                 typeof(PasswordBoxHelper),
-                new PropertyMetadata(string.Empty, OnBoundPasswordChanged));
+                new PropertyMetadata(string.Empty, _OnBoundPasswordChanged));
+
+        private static readonly DependencyProperty _isUpdatingProperty =
+            DependencyProperty.RegisterAttached("_isUpdating", typeof(bool), typeof(PasswordBoxHelper), new PropertyMetadata(false));
+
+        private static bool _GetIsUpdating(DependencyObject dp) => (bool)dp.GetValue(_isUpdatingProperty);
+        private static void _SetIsUpdating(DependencyObject dp, bool value) => dp.SetValue(_isUpdatingProperty, value);
+
 
         public static string GetBoundPassword(DependencyObject d)
         {
@@ -22,22 +29,27 @@ namespace DocumentFlowing.Common
             d.SetValue(BoundPasswordProperty, value);
         }
 
-        private static void OnBoundPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private static void _OnBoundPasswordChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is PasswordBox box)
             {
-                box.PasswordChanged -= PasswordChanged;
-                box.Password = (string)e.NewValue;
-                box.PasswordChanged += PasswordChanged;
+                box.PasswordChanged -= _PasswordChanged; 
+
+                if (!_GetIsUpdating(box))
+                {
+                    box.Password = (string)e.NewValue;
+                }
+                
+                box.PasswordChanged += _PasswordChanged;
             }
         }
 
-        private static void PasswordChanged(object sender, RoutedEventArgs e)
+        private static void _PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (sender is PasswordBox box)
-            {
-                SetBoundPassword(box, box.Password);
-            }
+            var box = sender as PasswordBox;
+            _SetIsUpdating(box, true);
+            SetBoundPassword(box, box.Password);
+            _SetIsUpdating(box, false);
         }
     }
 }
