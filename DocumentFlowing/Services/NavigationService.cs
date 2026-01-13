@@ -172,6 +172,43 @@ public class NavigationService : INavigationService
         }
     }
     
+    public bool? ShowDialog<T>(BaseViewModel viewModel) where T : Window
+    {
+        // Создаем scope для диалогового окна
+        var scope = _serviceProvider.CreateScope();
+
+        try
+        {
+            // 1. Получаем View из DI
+            var dialog = scope.ServiceProvider.GetService(typeof(T)) as Window;
+            if (dialog == null)
+            {
+                throw new InvalidOperationException($"Dialog {typeof(T)} not registered");
+            }
+
+            // 2. Устанавливаем переданный ViewModel как DataContext
+            dialog.DataContext = viewModel;
+
+            // 3. Подписываемся на событие закрытия, если ViewModel его поддерживает
+            if (viewModel is IDialogService dialogViewModel)
+            {
+                dialogViewModel.DialogClosed += _ => dialog.Close();
+            }
+
+            // 4. Настраиваем и показываем диалог
+            dialog.Owner = Application.Current.MainWindow;
+            dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            dialog.Closed += (s, e) => scope.Dispose();
+
+            return dialog.ShowDialog();
+        }
+        catch
+        {
+            scope.Dispose();
+            throw;
+        }
+    }
+    
     private void ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)
     {
         // // Очищаем старые пункты меню

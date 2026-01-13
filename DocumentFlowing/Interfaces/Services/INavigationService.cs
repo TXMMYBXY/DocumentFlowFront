@@ -26,4 +26,11 @@ public interface INavigationService
     /// </summary>
     /// <typeparam name="T">Окно</typeparam>
     bool? ShowDialog<T>() where T : Window;
+    /// <summary>
+    /// Метод открывает немодальное окно
+    /// </summary>
+    /// <param name="viewModel">ViewModel, в которую нужно передать параметры</param>
+    /// <typeparam name="TView">View</typeparam>
+    /// <returns></returns>
+    bool? ShowDialog<T>(BaseViewModel viewModel) where T : Window;
 }

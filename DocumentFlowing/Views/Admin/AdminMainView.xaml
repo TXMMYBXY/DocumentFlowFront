@@ -12,7 +12,10 @@
 
         <!-- Навигационная панель -->
         <StackPanel Background="#EFEFEF" Grid.Column="0">
-            <TextBlock Text="Admin panel" FontWeight="Bold" FontSize="18" Margin="10,20,10,20" />
+            <TextBlock Text="Admin panel" 
+                       FontWeight="Bold" 
+                       FontSize="18" 
+                       Margin="10,20,10,20"/>
 
             <!-- Убраны Click-обработчики, только Command -->
             <Button Content="Templates" 

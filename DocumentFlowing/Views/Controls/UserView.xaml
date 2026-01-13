@@ -116,7 +116,6 @@
                       SelectedItem="{Binding SelectedUser}"
                       AutoGenerateColumns="False"
                       IsReadOnly="True"
-                      SelectionMode="Single"
                       RowStyle="{StaticResource DataGridRowStyle}"
                       Grid.Row="0">
                 
@@ -138,11 +137,29 @@
                                         Binding="{Binding Role}" 
                                         Width="100"/>
                     
-                    <DataGridCheckBoxColumn Header="Активен" 
-                                            Binding="{Binding IsActive}" 
+                    <DataGridTextColumn Header="Отдел" 
+                                        Binding="{Binding Department}" 
+                                        Width="70"/>
+                    
+                    <DataGridCheckBoxColumn Header="Статус" 
+                                            Binding="{Binding IsActive, Mode=OneWay}"
                                             Width="70"/>
                     
                 </DataGrid.Columns>
+                
+                <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Изменить" 
+                              Command="{Binding EditUserCommand}"/>
+                    <MenuItem Header="Сменить пароль"
+                              Command="{Binding ChangePasswordCommand}"/>
+                    <MenuItem Header="Активировать/деактивировать"
+                              Command="{Binding ChangeUserStatusCommand}"/>
+                    <MenuItem Header="Удалить"
+                              Command="{Binding DeleteUserCommand}"/>
+                </ContextMenu>    
+                </DataGrid.ContextMenu>
+                
             </DataGrid>
             
             <!-- Loading Indicator -->

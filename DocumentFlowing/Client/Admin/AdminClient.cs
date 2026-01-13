@@ -22,4 +22,19 @@ public class AdminClient : GeneralClient, IAdminClient
     {
         return await PostResponseAsync<CreateNewUserDto, CreateNewUserDto>(createNewUserDto, "users/add-user");
     }
+
+    public async Task<bool> ChangeStatusByIdAsync(int userId)
+    {
+        return await UpdateResponseAsync<object, bool>(null, $"users/{userId}/change-status");
+    }
+
+    public async Task DeleteUserByIdAsync(int selectedUserId)
+    {
+        await DeleteResponseAsync<DeleteUserDto, object>(new DeleteUserDto{UserId =  selectedUserId}, "users/delete-user");
+    }
+
+    public async Task ChangePasswordByIdAsync(int userId, ResetPasswordDto resetPasswordDto)
+    {
+        await UpdateResponseAsync<ResetPasswordDto, object>(resetPasswordDto, $"users/{userId}/reset-password");
+    }
 }
