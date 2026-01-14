@@ -1,3 +1,4 @@
+using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
@@ -97,7 +98,14 @@ public class UserViewModel : BaseViewModel
     {
         AddUserCommand = new RelayCommand(() => _userModel.OpenModalWindowCreateUser());
         RefreshCommand = new RelayCommand(async () => await _LoadUsersAsync());
-        EditUserCommand = new RelayCommand(() => throw new NotImplementedException());
+        EditUserCommand = new RelayCommand(() => _userModel.OpenModalWindowUpdateUser(
+            new UpdateUserDto
+            {
+                Email = SelectedUser.Email,
+                FullName = SelectedUser.FullName,
+                RoleId = SelectedUser.RoleEntity.Id,
+                Department = SelectedUser.Department
+            }, SelectedUser.Id));
         ChangePasswordCommand = new RelayCommand(() => _userModel.OpenModalWindowChangePassword(SelectedUser?.Id ?? 0));
         ChangeUserStatusCommand = new RelayCommand(async () => await _ChangeUserStatusAsync(), 
             () => SelectedUser != null);

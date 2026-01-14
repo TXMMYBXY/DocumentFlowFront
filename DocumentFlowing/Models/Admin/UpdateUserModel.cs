@@ -1,42 +1,22 @@
 using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Interfaces.Client;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Models.Admin;
 
-public class CreateUserModel
+public class UpdateUserModel
 {
     private readonly IAdminClient _adminClient;
-    
-    public CreateUserModel(IAdminClient adminClient)
+
+    public UpdateUserModel(IAdminClient adminClient)
     {
         _adminClient = adminClient;
     }
-    
-    public async Task<bool> CreateUserAsync(CreateNewUserDto userDto)
+
+    public async Task<bool> UpdateUserAsync(int userId, UpdateUserDto updateUserDto)
     {
-        try
-        {
-            // Бизнес-валидация
-            if (string.IsNullOrWhiteSpace(userDto.Email))
-                throw new ArgumentException("Email обязателен");
-                    
-            if (string.IsNullOrWhiteSpace(userDto.Password) || userDto.Password.Length < 6)
-                throw new ArgumentException("Пароль должен быть не менее 6 символов");
-                
-            if (string.IsNullOrWhiteSpace(userDto.FullName))
-                throw new ArgumentException("ФИО обязательно");
-                
-            // Вызов API
-            await _adminClient.CreateNewUserAsync(userDto);
-            
-            return true;
-        }
-        catch (Exception ex)
-        {
-            // Логирование ошибки
-            Console.WriteLine($"Ошибка создания пользователя: {ex.Message}");
-            throw; // Пробрасываем выше для обработки в ViewModel
-        }
+        await _adminClient.UpdateUserAsync(userId, updateUserDto);
+        
+        return true;
     }
     
     public bool ValidateEmail(string email)

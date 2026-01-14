@@ -27,14 +27,13 @@ namespace DocumentFlowing.ViewModels.Admin
             _navigationService = navigationService;
             _adminClient = adminClient;
             
-            ShowTemplatesCommand = new RelayCommand(ShowTemplates);
-            ShowUsersCommand = new RelayCommand(ShowUsers);
+            ShowTemplatesCommand = new RelayCommand(_ShowTemplates);
+            ShowUsersCommand = new RelayCommand(_ShowUsers);
             
-            // По умолчанию показываем шаблоны или пользователей
-            ShowTemplates(); // Или ShowUsers();
+            _ShowUsers();
         }
         
-        private void ShowTemplates()
+        private void _ShowTemplates()
         {
             // var templatesView = new Views.Controls.TemplatesView();
             // // Установите DataContext если нужно
@@ -42,7 +41,7 @@ namespace DocumentFlowing.ViewModels.Admin
             // CurrentView = templatesView;
         }
         
-        private void ShowUsers()
+        private void _ShowUsers()
         {
             var usersView = new Views.Controls.UserView();
             usersView.DataContext = new UserViewModel(_adminClient, _navigationService);

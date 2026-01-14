@@ -7,6 +7,7 @@ using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
+using DocumentFlowing.Models.Admin;
 using DocumentFlowing.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
@@ -70,6 +71,7 @@ public static class ServiceCollectionExtensions
         // Models
         services.AddScoped<LoginModel>();
         services.AddScoped<ResetPasswordModel>();
+        services.AddScoped<UpdateUserModel>();
         
         // Views
         services.AddSingleton<MainWindow>();
@@ -81,6 +83,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<UserMainView>();
         services.AddTransient<CreateUserView>();
         services.AddTransient<ResetPasswordView>();
+        services.AddTransient<UpdateUserView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
@@ -89,6 +92,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<BossMainViewModel>();
         services.AddTransient<CreateUserViewModel>();
         services.AddTransient<ResetPasswordViewModel>();
+        services.AddTransient<UpdateUserViewModel>();
         
         return services;
     }

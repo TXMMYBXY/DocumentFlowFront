@@ -45,4 +45,11 @@ public class UserModel
 
         _navigationService.ShowDialog<ResetPasswordView>(resetPasswordViewModel);
     }
+
+    public void OpenModalWindowUpdateUser(UpdateUserDto updateUserDto, int userId)
+    {
+        var updateUserViewModel = new UpdateUserViewModel(_adminClient, updateUserDto, userId);
+        
+        _navigationService.ShowDialog<UpdateUserView>(updateUserViewModel);
+    }
 }

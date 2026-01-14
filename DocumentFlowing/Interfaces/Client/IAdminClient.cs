@@ -9,4 +9,5 @@ public interface IAdminClient
     Task<bool> ChangeStatusByIdAsync(int userId);
     Task DeleteUserByIdAsync(int selectedUserId);
     Task ChangePasswordByIdAsync(int userId, ResetPasswordDto resetPasswordDto);
+    Task UpdateUserAsync(int userId, UpdateUserDto updateUserDto);
 }

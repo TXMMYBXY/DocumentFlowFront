@@ -30,7 +30,7 @@ public class NavigationService : INavigationService
             { typeof(LoginView), typeof(LoginViewModel) },
             { typeof(AdminMainView), typeof(AdminMainViewModel) },
             { typeof(BossMainView), typeof(BossMainViewModel) },
-            {typeof(CreateUserView), typeof(CreateUserViewModel)}
+            { typeof(CreateUserView), typeof(CreateUserViewModel) },
         };
         
         // Инициализаторы для View с SideBar

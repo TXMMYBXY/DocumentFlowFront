@@ -37,4 +37,9 @@ public class AdminClient : GeneralClient, IAdminClient
     {
         await UpdateResponseAsync<ResetPasswordDto, object>(resetPasswordDto, $"users/{userId}/reset-password");
     }
+
+    public async Task UpdateUserAsync(int userId, UpdateUserDto updateUserDto)
+    {
+        await UpdateResponseAsync<UpdateUserDto, object>(updateUserDto, $"users/{userId}/update-user-info");
+    }
 }

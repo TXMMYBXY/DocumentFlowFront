@@ -1,4 +1,5 @@
 using DocumentFlowing.Client.Admin.Dtos;
+using DocumentFlowing.Models;
 using DocumentFlowing.ViewModels.Base;
 
 namespace DocumentFlowing.ViewModels.Controls;
@@ -17,6 +18,7 @@ public class UserItemViewModel : BaseViewModel
     public string FullName => _userDto.FullName;
     public string Role => _userDto.Role;
     public string Department => _userDto.Department;
+    public Role RoleEntity => _userDto.RoleEntity;
     
     public bool IsActive
     {

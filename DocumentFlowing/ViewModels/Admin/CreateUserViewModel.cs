@@ -3,6 +3,7 @@ using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
+using DocumentFlowing.Models.Admin;
 using DocumentFlowing.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -15,70 +16,72 @@ namespace DocumentFlowing.ViewModels.Admin
         private readonly CreateUserModel _createUserModel;
         private bool _isLoading;
         private string _errorMessage;
+        private bool _canCreate;
         
         private string _email;
+        private string _password;
+        private string _confirmPassword;
+        private string _fullName;
+        private string _department;
+        private Role _selectedRole;
+        
         public string Email
         {
             get => _email;
             set
             {
                 SetField(ref _email, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
-        private string _password;
         public string Password
         {
             get => _password;
             set
             {
                 SetField(ref _password, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
-        private string _confirmPassword;
         public string ConfirmPassword
         {
             get => _confirmPassword;
             set
             {
                 SetField(ref _confirmPassword, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
-        private string _fullName;
         public string FullName
         {
             get => _fullName;
             set
             {
                 SetField(ref _fullName, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
-        private Role _selectedRole;
         public Role SelectedRole
         {
             get => _selectedRole;
             set
             {
                 SetField(ref _selectedRole, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
-        private string _department;
         public string Department
         {
             get => _department;
             set
             {
                 SetField(ref _department, value);
-                ValidateForm();
+                _ValidateForm();
             }
         }
         
@@ -95,11 +98,10 @@ namespace DocumentFlowing.ViewModels.Admin
         }
         
         // Коллекции для ComboBox
-        public ObservableCollection<Role> Roles { get; } = new ObservableCollection<Role>();
-        public ObservableCollection<string> DepartmentSuggestions { get; } = new ObservableCollection<string>();
+        public ObservableCollection<Role> Roles { get; } = new ();
+        public ObservableCollection<string> DepartmentSuggestions { get; } = new ();
         
-        // Флаг возможности создания
-        private bool _canCreate;
+        
         public bool CanCreate
         {
             get => _canCreate;
@@ -125,15 +127,15 @@ namespace DocumentFlowing.ViewModels.Admin
             _createUserModel = new CreateUserModel(adminClient);
             
             // Инициализация команд
-            CreateCommand = new RelayCommand(async () => await CreateUserAsync(), 
+            CreateCommand = new RelayCommand(async () => await _CreateUserAsync(), 
                 () => CanCreate && !IsLoading);
             CancelCommand = new RelayCommand(() => DialogClosed?.Invoke(true));
             
             // Загружаем данные
-            LoadInitialDataAsync();
+            _LoadInitialDataAsync();
         }
         
-        private async Task LoadInitialDataAsync()
+        private async Task _LoadInitialDataAsync()
         {
             try
             {
@@ -160,7 +162,6 @@ namespace DocumentFlowing.ViewModels.Admin
                             DepartmentSuggestions.Add(dept);
                         }
                         
-                        // Устанавливаем значения по умолчанию
                         if (Roles.Any())
                             SelectedRole = Roles.First();
                     });
@@ -179,11 +180,10 @@ namespace DocumentFlowing.ViewModels.Admin
         /// <summary>
         /// Валидация формы
         /// </summary>
-        private void ValidateForm()
+        private void _ValidateForm()
         {
             ErrorMessage = string.Empty;
             
-            // Проверка email
             if (!string.IsNullOrWhiteSpace(Email) && !_createUserModel.ValidateEmail(Email))
             {
                 ErrorMessage = "Некорректный email адрес";
@@ -191,7 +191,6 @@ namespace DocumentFlowing.ViewModels.Admin
                 return;
             }
             
-            // Проверка пароля
             if (!string.IsNullOrWhiteSpace(Password) && Password.Length < 3)
             {
                 ErrorMessage = "Пароль должен содержать не менее 4 символов";
@@ -199,10 +198,8 @@ namespace DocumentFlowing.ViewModels.Admin
                 return;
             }
             
-            // Проверка на совпадение паролей
             ShowPasswordMismatchError = !string.IsNullOrEmpty(ConfirmPassword) && Password != ConfirmPassword;
             
-            // Проверка обязательных полей
             CanCreate = !ShowPasswordMismatchError &&
                        !string.IsNullOrWhiteSpace(Email) &&
                        !string.IsNullOrWhiteSpace(Password) &&
@@ -211,14 +208,13 @@ namespace DocumentFlowing.ViewModels.Admin
                        SelectedRole != null;
         }
         
-        private async Task CreateUserAsync()
+        private async Task _CreateUserAsync()
         {
             try
             {
                 IsLoading = true;
                 ErrorMessage = string.Empty;
                 
-                // Создаем DTO
                 var createUserDto = new CreateNewUserDto
                 {
                     Email = Email,
@@ -228,12 +224,10 @@ namespace DocumentFlowing.ViewModels.Admin
                     Department = Department
                 };
                 
-                // Вызываем Model
                 var result = await _createUserModel.CreateUserAsync(createUserDto);
                 
                 if (result)
                 {
-                    // Успешное создание
                     MessageBox.Show("Пользователь успешно создан", "Успех",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                     
