@@ -1,10 +1,13 @@
 using DocumentFlowing.Client;
+using DocumentFlowing.Client.Admin;
 using DocumentFlowing.Client.Authorization;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Helpers;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
+using DocumentFlowing.Models.Admin;
 using DocumentFlowing.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
@@ -18,6 +21,7 @@ using DocumentFlowing.Views.Purchaser;
 using DocumentFlowing.Views.User;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace DocumentFlowing.Configuration;
 
@@ -35,6 +39,24 @@ public static class ServiceCollectionExtensions
         {
             cfg.AddMaps(typeof(AuthorizationMappingProfile).Assembly);
         });
+        
+        // Client
+        services.AddTransient<AuthorizationHandler>();
+        
+        services.AddHttpClient<IAuthorizationClient, AuthorizationClient>()
+            .ConfigureHttpClient((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
+                // client.Timeout = TimeSpan.FromSeconds(10);
+            });
+        
+        services.AddHttpClient<IAdminClient, AdminClient>()
+            .AddHttpMessageHandler<AuthorizationHandler>()
+            .ConfigureHttpClient((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
+                // client.Timeout = TimeSpan.FromSeconds(30);
+            });
 
         // Services
         services.AddScoped<IGeneralClient, GeneralClient>();
@@ -44,9 +66,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IDpapiService, DpapiService>();
         services.AddScoped<INavigationService, NavigationService>();
         services.AddScoped<ISessionProviderService, SessionProviderService>();
+
         
         // Models
         services.AddScoped<LoginModel>();
+        services.AddScoped<ResetPasswordModel>();
+        services.AddScoped<UpdateUserModel>();
         
         // Views
         services.AddSingleton<MainWindow>();
@@ -56,12 +81,18 @@ public static class ServiceCollectionExtensions
         services.AddTransient<BossMainView>();
         services.AddTransient<PurchaserMainView>();
         services.AddTransient<UserMainView>();
+        services.AddTransient<CreateUserView>();
+        services.AddTransient<ResetPasswordView>();
+        services.AddTransient<UpdateUserView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
         services.AddTransient<SidebarViewModel>();
         services.AddTransient<AdminMainViewModel>();
         services.AddTransient<BossMainViewModel>();
+        services.AddTransient<CreateUserViewModel>();
+        services.AddTransient<ResetPasswordViewModel>();
+        services.AddTransient<UpdateUserViewModel>();
         
         return services;
     }

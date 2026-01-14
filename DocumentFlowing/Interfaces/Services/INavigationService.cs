@@ -9,18 +9,28 @@ public interface INavigationService
     /// Метод для открытия окна по роли пользователя 
     /// </summary>
     void NavigateToRole(int? roleId);
+    
     /// <summary>
     /// Метод для открытия модального окна
     /// </summary>
-    /// <typeparam name="T">Окно</typeparam>
-    void NavigateTo<T>() where T : Window;
+    /// <typeparam name="TView">Окно</typeparam>
+    void NavigateTo<TView>() where TView : Window;
+    
     /// <summary>
     /// Метод для закрытия текущего окна
     /// </summary>
     void CloseCurrentWindow();
+    
     /// <summary>
     /// Метод открывает немодальное окно
     /// </summary>
     /// <typeparam name="T">Окно</typeparam>
     bool? ShowDialog<T>() where T : Window;
+    /// <summary>
+    /// Метод открывает немодальное окно
+    /// </summary>
+    /// <param name="viewModel">ViewModel, в которую нужно передать параметры</param>
+    /// <typeparam name="TView">View</typeparam>
+    /// <returns></returns>
+    bool? ShowDialog<T>(BaseViewModel viewModel) where T : Window;
 }

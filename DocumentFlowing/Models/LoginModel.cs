@@ -25,4 +25,12 @@ public class LoginModel
     {
         return await _authorizationService.TryAutoLoginAsync()? _tokenService.GetUserInfo().RoleId : null;
     }
+
+    public async Task CheckRefreshTokenExipredAsync()
+    {
+        if (_tokenService.IsRefreshTokenExpires())
+        {
+            await _tokenService.GetNewRefreshTokenAsync();
+        }
+    }
 }

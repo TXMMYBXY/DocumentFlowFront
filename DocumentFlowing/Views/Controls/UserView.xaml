@@ -1,0 +1,272 @@
+﻿<UserControl x:Class="DocumentFlowing.Views.Controls.UserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:DocumentFlowing.ViewModels.Controls"
+             xmlns:converters="clr-namespace:DocumentFlowing.Common"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance controls:UserViewModel}">
+    
+    <UserControl.Resources>
+        <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter"/>
+        <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+        <converters:SearchTextToVisibilityConverter x:Key="SearchTextToVisibilityConverter"/>
+        
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        
+        <!-- Стиль для строк DataGrid -->
+        <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                    <Setter Property="Foreground" Value="Gray"/>
+                    <Setter Property="Opacity" Value="0.7"/>
+                </DataTrigger>
+                <!-- Триггер для наведения курсора -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <!-- Триггер для выбранной строки -->
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#B0C4DE"/>
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <!-- Триггер для неактивной выбранной строки -->
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsActive}" Value="False"/>
+                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="True"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Foreground" Value="#333333"/>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- Стиль для TextBox с кнопкой очистки -->
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="#FFF0F0F0" 
+                                BorderBrush="#FFCCCCCC" 
+                                BorderThickness="1" 
+                                CornerRadius="3"
+                                Padding="3">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="Поиск..." 
+                                           Foreground="Gray" 
+                                           Margin="5,0"
+                                           VerticalAlignment="Center"
+                                           Visibility="{Binding Text, 
+                                                RelativeSource={RelativeSource TemplatedParent}, 
+                                                Converter={StaticResource EmptyStringToVisibilityConverter}}"/>
+                                
+                                <ScrollViewer x:Name="PART_ContentHost" 
+                                              VerticalAlignment="Center"
+                                              Grid.Column="0"/>
+                                
+                                <!-- Кнопка очистки поиска -->
+                                <Button Grid.Column="1"
+                                        Content="✕"
+                                        FontSize="10"
+                                        Padding="4,0"
+                                        Margin="0,0,3,0"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding ClearSearchCommand}"
+                                        Visibility="{Binding Text, 
+                                                RelativeSource={RelativeSource TemplatedParent}, 
+                                                Converter={StaticResource SearchTextToVisibilityConverter}}"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Foreground="Gray"
+                                        Cursor="Hand"
+                                        ToolTip="Очистить поиск">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="10">
+                                                            <ContentPresenter HorizontalAlignment="Center"
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E0E0E0"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.Row="0" Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Text="Управление пользователями" 
+                       FontSize="20" 
+                       FontWeight="Bold"/>
+            
+            <TextBlock Grid.Column="1"
+                       Text="{Binding CountFounded, StringFormat='Найдено: {0}'}"
+                       FontStyle="Italic"
+                       Foreground="Gray"
+                       VerticalAlignment="Center"
+                       Visibility="{Binding SearchText, Converter={StaticResource StringToVisibilityConverter}}"/>
+        </Grid>
+        
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,15">
+            <TextBox Width="250" 
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="0,0,10,0"
+                     Style="{StaticResource SearchTextBoxStyle}"/>
+            
+            <Button Content="Добавить пользователя" 
+                    Command="{Binding AddUserCommand}"
+                    Margin="0,0,10,0"
+                    Padding="10,5"/>
+            
+            <Button Content="Обновить" 
+                    Command="{Binding RefreshCommand}"
+                    Padding="10,5"/>
+        </StackPanel>
+        
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <DataGrid ItemsSource="{Binding UsersView}"
+                      SelectedItem="{Binding SelectedUser}"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      SelectionMode="Single"
+                      RowStyle="{StaticResource DataGridRowStyle}"
+                      Grid.Row="0"
+                      CanUserSortColumns="True">
+                
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" 
+                                        Binding="{Binding Id}" 
+                                        Width="Auto"
+                                        Visibility="Collapsed"/>
+                    
+                    <DataGridTextColumn Header="Email" 
+                                        Binding="{Binding Email}" 
+                                        Width="180"/>
+                    
+                    <DataGridTextColumn Header="ФИО" 
+                                        Binding="{Binding FullName}" 
+                                        Width="200"/>
+                    
+                    <DataGridTextColumn Header="Роль" 
+                                        Binding="{Binding Role}" 
+                                        Width="100"/>
+                    
+                    <DataGridTextColumn Header="Отдел" 
+                                        Binding="{Binding Department}" 
+                                        Width="70"/>
+                    
+                    <DataGridCheckBoxColumn Header="Статус" 
+                                            Binding="{Binding IsActive, Mode=OneWay}"
+                                            Width="70"/>
+                    
+                </DataGrid.Columns>
+                
+                <DataGrid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Изменить" 
+                                  Command="{Binding EditUserCommand}"/>
+                        <MenuItem Header="Сменить пароль"
+                                  Command="{Binding ChangePasswordCommand}"
+                                  CommandParameter="{Binding SelectedUser}"/>
+                        <MenuItem Header="Активировать/деактивировать"
+                                  Command="{Binding ChangeUserStatusCommand}"/>
+                        <MenuItem Header="Удалить"
+                                  Command="{Binding DeleteUserCommand}"/>
+                    </ContextMenu>    
+                </DataGrid.ContextMenu>
+                
+            </DataGrid>
+            
+            <!-- Loading Indicator -->
+            <Grid Grid.Row="1" 
+                  Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
+                  Height="30"
+                  VerticalAlignment="Bottom"
+                  Background="#F0F0F0">
+                <ProgressBar IsIndeterminate="True"
+                             Height="20"
+                             Margin="10,5"/>
+            </Grid>
+            
+            <!-- Индикатор "ничего не найдено" -->
+            <Border Grid.Row="0"
+                    Background="White"
+                    Visibility="{Binding UsersView.IsEmpty, Converter={StaticResource BoolToVis}}"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Padding="20"
+                    CornerRadius="5">
+                <StackPanel>
+                    <TextBlock Text="Пользователи не найдены"
+                               FontSize="14"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="{Binding SearchText, StringFormat='По запросу &quot;{0}&quot; ничего не найдено'}"
+                               HorizontalAlignment="Center"
+                               Margin="0,5,0,0"
+                               Visibility="{Binding SearchText, Converter={StaticResource StringToVisibilityConverter}}"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+        
+        <!-- Error Message -->
+        <TextBlock Grid.Row="3"
+                   Text="{Binding ErrorMessage}"
+                   Foreground="Red"
+                   Margin="0,10,0,0"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
+        
+        <!-- Action Buttons for Selected User -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Margin="0,10,0,0">
+            <!-- Кнопки можно оставить закомментированными или удалить -->
+        </StackPanel>
+    </Grid>
+</UserControl>

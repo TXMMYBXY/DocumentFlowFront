@@ -22,12 +22,12 @@ public interface ITokenService
     /// <summary>
     /// Возвращает токен доступа
     /// </summary>
-    string GetAccessToken();
+    string ReturnAccessToken();
     
     /// <summary>
     /// Возвращает токен обновления
     /// </summary>
-    string GetRefreshToken();
+    string ReturnRefreshToken();
     
     /// <summary>
     /// Возвращает информацию о пользователе
@@ -37,7 +37,8 @@ public interface ITokenService
     /// <summary>
     /// Проверяет есть ли валидный токен доступа
     /// </summary>
-    bool HasValidAccessToken();
+    bool IsAccessTokenValid();
+    
     /// <summary>
     /// Проверяет есть ли валидный токен обновления
     /// </summary>
@@ -47,7 +48,18 @@ public interface ITokenService
     /// Очищает реестр от токенов
     /// </summary>
     void ClearTokens();
-    //Пока не используются
-    int? GetRefreshTokenId();
-    int? GetUserId();
+    
+    /// <summary>
+    /// Получить новый токен доступа
+    /// </summary>
+    Task<string> GetNewAccessTokenAsync();
+    
+    /// <summary>
+    /// Получить новый токен обновления
+    /// </summary>
+    Task GetNewRefreshTokenAsync();
+    /// <summary>
+    /// Проверка срока жизни токена обновления. true если срок меньше 1 дня
+    /// </summary>
+    bool IsRefreshTokenExpires();
 }

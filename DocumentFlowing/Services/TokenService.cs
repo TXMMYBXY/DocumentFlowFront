@@ -1,5 +1,7 @@
-﻿using DocumentFlowing.Client.Authorization.Dtos;
+﻿using AutoMapper;
+using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Client.Authorization.ViewModels;
+using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
@@ -11,10 +13,17 @@ public class TokenService : ITokenService
 {
     private const string RegistryPath = @"Software\DocumentFlowing\Tokens";
     private readonly IDpapiService _dpapiService;
+    private readonly IAuthorizationClient _authorizationClient;
+    private readonly IMapper _mapper;
 
-    public TokenService(IDpapiService dpapiService)
+    public TokenService(
+        IDpapiService dpapiService, 
+        IAuthorizationClient authorizationClient,
+        IMapper mapper)
     {
         _dpapiService = dpapiService;
+        _authorizationClient = authorizationClient;
+        _mapper = mapper;
     }
     
     public void SaveTokens(LoginResponseDto loginResponseDto)
@@ -92,7 +101,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public string GetAccessToken()
+    public string ReturnAccessToken()
     {
         try
         {
@@ -101,6 +110,7 @@ public class TokenService : ITokenService
                 if (key == null) return null;
 
                 var encryptedToken = key.GetValue("AccessToken") as string;
+                
                 if (string.IsNullOrEmpty(encryptedToken)) return null;
 
                 return _dpapiService.Decrypt(encryptedToken);
@@ -112,7 +122,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public string GetRefreshToken()
+    public string ReturnRefreshToken()
     {
         try
         {
@@ -158,7 +168,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public int? GetUserId()
+    private int? _GetUserId()
     {
         try
         {
@@ -175,20 +185,70 @@ public class TokenService : ITokenService
         }
     }
 
-    public int? GetRefreshTokenId()
+    public async Task<string> GetNewAccessTokenAsync()
+    {
+        var request = new AccessTokenViewModelRequest
+        {
+            RefreshToken = ReturnRefreshToken(),
+            UserId = _GetUserId()
+        };
+
+        if (string.IsNullOrEmpty(request.RefreshToken))
+        {
+            throw new NullReferenceException("Refresh token is out");
+        }
+        
+        var token = await _authorizationClient.GetNewAccessTokenAsync(request, "authorization/access");
+
+        if (token == null)
+        {
+            throw new NullReferenceException("Access token is not got");
+        }
+        
+        SaveTokens(_mapper.Map<LoginResponseDto>(token));
+
+        return token.AccessToken;
+    }
+
+    public async Task GetNewRefreshTokenAsync()
+    {
+        var request = new RefreshTokenViewModelRequest
+        {
+            UserId = _GetUserId(),
+            Token = ReturnRefreshToken()
+        };
+
+        if (request.UserId == null && string.IsNullOrEmpty(request.Token))
+        {
+            throw new NullReferenceException("Refresh token is out");
+        }
+        
+        var token = await _authorizationClient.GetNewRefreshTokenAsync(request, "authorization/refresh");
+        
+        SaveRefreshToken(token);
+    }
+
+    public bool IsRefreshTokenExpires()
     {
         try
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
-                if (key == null) return null;
+                if (key == null) return false;
 
-                return key.GetValue("RefreshTokenId") as int?;
+                var expiresAtStr = key.GetValue("RefreshTokenExpires") as string;
+                if (!string.IsNullOrEmpty(expiresAtStr) &&
+                    DateTime.TryParse(expiresAtStr, out DateTime expiresAt))
+                {
+                    return expiresAt - DateTime.UtcNow < TimeSpan.FromDays(1);
+                }
+
+                return false;
             }
         }
         catch
         {
-            return null;
+            return false;
         }
     }
 
@@ -204,11 +264,11 @@ public class TokenService : ITokenService
         }
     }
 
-    public bool HasValidAccessToken()
+    public bool IsAccessTokenValid()
     {
         try
         {
-            var token = GetAccessToken();
+            var token = ReturnAccessToken();
             if (string.IsNullOrEmpty(token)) return false;
 
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))

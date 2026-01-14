@@ -32,27 +32,18 @@ public class AuthorizationService :  IAuthorizationService
         {
             var request = new RefreshTokenToLoginRequestViewModel
             {
-                RefreshToken = _tokenService.GetRefreshToken()
+                RefreshToken = _tokenService.ReturnRefreshToken()
             };
             
-            
-            if (!string.IsNullOrEmpty(request.RefreshToken) && _tokenService.IsRefreshTokenValid())
+            if (!string.IsNullOrEmpty(request.RefreshToken))
             {
                 // Запрос к API за доступом
                 
                 var refreshToken 
-                    = await _authorizationClient.RequestForAccessAsync<RefreshTokenToLoginRequestViewModel, RefreshTokenToLoginResponseViewModel>
-                        (request, "authorization/request-for-access");
+                    = await _authorizationClient.RequestForAccessAsync(request, "authorization/request-for-access");
 
                 if (refreshToken.IsAllowed)
                 {
-                    if (refreshToken.RefreshTokenDto != null)
-                    {
-                        // Сохраняем новые токены
-                        var refreshTokenResponseViewModel = _mapper.Map<RefreshTokenResponseViewModel>(refreshToken);
-                        _tokenService.SaveRefreshToken(refreshTokenResponseViewModel);
-                    }
-
                     return true;
                 }
             }
@@ -76,8 +67,7 @@ public class AuthorizationService :  IAuthorizationService
                 Password = password
             };
 
-            var response = await _authorizationClient.LoginAsync<LoginRequestDto, LoginResponseDto>(
-                loginRequest, "authorization/login");
+            var response = await _authorizationClient.LoginAsync(loginRequest, "authorization/login");
 
             if (response != null && !string.IsNullOrEmpty(response.AccessToken))
             {

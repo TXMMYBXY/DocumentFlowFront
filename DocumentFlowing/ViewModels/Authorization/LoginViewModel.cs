@@ -46,21 +46,13 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     public string Email
     {
         get => _email;
-        set
-        {
-            _email = value;
-            OnPropertyChanged(nameof(Email));
-        }
+        set => SetField(ref _email, value);
     }
     
     public string Password
     {
         get => _password;
-        set
-        {
-            _password = value;
-            OnPropertyChanged(nameof(Password));
-        }
+        set => SetField(ref _password, value);
     }
 
     public bool IsLoading
@@ -68,8 +60,7 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
         get => _isLoading;
         set
         {
-            _isLoading = value;
-            OnPropertyChanged(nameof(IsLoading));
+            SetField(ref _isLoading, value);
             OnPropertyChanged(nameof(LoginButtonText));
         }
     }
@@ -86,6 +77,7 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     {
         try
         {
+            await _loginModel.CheckRefreshTokenExipredAsync();
             var roleId = await _loginModel.LoginByRefreshTokenAsync();
             if (roleId.HasValue)
             {
