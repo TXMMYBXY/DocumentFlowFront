@@ -1,4 +1,3 @@
-using AutoMapper;
 using System.Globalization;
 using System.Windows.Data;
 

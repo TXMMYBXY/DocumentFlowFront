@@ -8,6 +8,7 @@ using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.Models.Admin;
+using DocumentFlowing.Models.Authorization;
 using DocumentFlowing.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
@@ -47,7 +48,6 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient((provider, client) =>
             {
                 var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
-                // client.Timeout = TimeSpan.FromSeconds(10);
             });
         
         services.AddHttpClient<IAdminClient, AdminClient>()
@@ -55,7 +55,6 @@ public static class ServiceCollectionExtensions
             .ConfigureHttpClient((provider, client) =>
             {
                 var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
-                // client.Timeout = TimeSpan.FromSeconds(30);
             });
 
         // Services

@@ -62,19 +62,6 @@ public class NavigationService : INavigationService
         }
     }
 
-    private void ShowWindow(Window newWindow)
-    {
-        var currentWindow = Application.Current.MainWindow;
-        
-        newWindow.Show();
-        Application.Current.MainWindow = newWindow;
-        
-        if (currentWindow != null && currentWindow != newWindow)
-        {
-            currentWindow.Close();
-        }
-    }
-
     public void NavigateTo<TView>() where TView : Window
     {
         var scope = _serviceProvider.CreateScope();
@@ -100,36 +87,15 @@ public class NavigationService : INavigationService
             initializer(view, scope.ServiceProvider);
         }
         
-        ShowWindow(view);
-    }
-    
-    private void _InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
-    {
-        if (window.DataContext is IHasSidebar sidebarContainer)
-        {
-            // Создаем SidebarViewModel и передаем в основной ViewModel
-            var sidebarViewModel = serviceProvider.GetService<SidebarViewModel>();
-            sidebarContainer.SidebarViewModel = sidebarViewModel;
-            
-            // Настраиваем Sidebar для конкретной роли
-            ConfigureSidebarForRole(sidebarViewModel, sidebarContainer);
-        }
-    }
-    
-    
-    public void CloseCurrentWindow()
-    {
-        Application.Current.MainWindow?.Close();
+        _ShowWindow(view);
     }
 
     public bool? ShowDialog<T>() where T : Window
     {
-        // Создаем scope для диалогового окна
         var scope = _serviceProvider.CreateScope();
         
         try
         {
-            // 1. Получаем диалоговое окно
             var dialog = scope.ServiceProvider.GetService(typeof(T)) as Window;
             
             if (dialog == null)
@@ -138,15 +104,14 @@ public class NavigationService : INavigationService
                 throw new InvalidOperationException($"Dialog {typeof(T)} not registered");
             }
 
-            // 2. Получаем соответствующий ViewModel из маппинга
             if (_viewToViewModelMapping.TryGetValue(typeof(T), out var viewModelType))
             {
                 var viewModel = scope.ServiceProvider.GetService(viewModelType) as BaseViewModel;
+                
                 if (viewModel != null)
                 {
                     dialog.DataContext = viewModel;
 
-                    // Если ViewModel - это диалоговая ViewModel, подписываемся на событие закрытия
                     if (viewModel is IDialogService dialogViewModel)
                     {
                         dialogViewModel.DialogClosed += _ => dialog.Close();
@@ -154,19 +119,14 @@ public class NavigationService : INavigationService
                 }
             }
 
-            // 3. Подписываемся на закрытие окна для освобождения ресурсов
             dialog.Closed += (s, e) => scope.Dispose();
-
-            // 4. Настраиваем окно как диалоговое
             dialog.Owner = Application.Current.MainWindow;
             dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             
-            // 5. Показываем диалог
             return dialog.ShowDialog();
         }
         catch
         {
-            // В случае ошибки освобождаем ресурсы
             scope.Dispose();
             throw;
         }
@@ -174,28 +134,23 @@ public class NavigationService : INavigationService
     
     public bool? ShowDialog<T>(BaseViewModel viewModel) where T : Window
     {
-        // Создаем scope для диалогового окна
         var scope = _serviceProvider.CreateScope();
 
         try
         {
-            // 1. Получаем View из DI
             var dialog = scope.ServiceProvider.GetService(typeof(T)) as Window;
             if (dialog == null)
             {
                 throw new InvalidOperationException($"Dialog {typeof(T)} not registered");
             }
 
-            // 2. Устанавливаем переданный ViewModel как DataContext
             dialog.DataContext = viewModel;
 
-            // 3. Подписываемся на событие закрытия, если ViewModel его поддерживает
             if (viewModel is IDialogService dialogViewModel)
             {
                 dialogViewModel.DialogClosed += _ => dialog.Close();
             }
 
-            // 4. Настраиваем и показываем диалог
             dialog.Owner = Application.Current.MainWindow;
             dialog.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             dialog.Closed += (s, e) => scope.Dispose();
@@ -208,8 +163,32 @@ public class NavigationService : INavigationService
             throw;
         }
     }
+        
+    private void _InitializeWindowWithSidebar(Window window, IServiceProvider serviceProvider)
+    {
+        if (window.DataContext is IHasSidebar sidebarContainer)
+        {
+            var sidebarViewModel = serviceProvider.GetService<SidebarViewModel>();
+            sidebarContainer.SidebarViewModel = sidebarViewModel;
+            
+            _ConfigureSidebarForRole(sidebarViewModel, sidebarContainer);
+        }
+    }
     
-    private void ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)
+    private void _ShowWindow(Window newWindow)
+    {
+        var currentWindow = Application.Current.MainWindow;
+        
+        newWindow.Show();
+        Application.Current.MainWindow = newWindow;
+        
+        if (currentWindow != null && currentWindow != newWindow)
+        {
+            currentWindow.Close();
+        }
+    }
+    
+    private void _ConfigureSidebarForRole(SidebarViewModel sidebarViewModel, IHasSidebar mainViewModel)
     {
         // // Очищаем старые пункты меню
         // sidebarViewModel.MenuItems.Clear();

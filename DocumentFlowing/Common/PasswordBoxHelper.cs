@@ -5,19 +5,17 @@ namespace DocumentFlowing.Common
 {
     public static class PasswordBoxHelper
     {
+        private static readonly DependencyProperty _isUpdatingProperty =
+            DependencyProperty.RegisterAttached("_isUpdating", typeof(bool), typeof(PasswordBoxHelper), new PropertyMetadata(false));
+        private static bool _GetIsUpdating(DependencyObject dp) => (bool)dp.GetValue(_isUpdatingProperty);
+        private static void _SetIsUpdating(DependencyObject dp, bool value) => dp.SetValue(_isUpdatingProperty, value);
+
         public static readonly DependencyProperty BoundPasswordProperty =
             DependencyProperty.RegisterAttached(
                 "BoundPassword",
                 typeof(string),
                 typeof(PasswordBoxHelper),
                 new PropertyMetadata(string.Empty, _OnBoundPasswordChanged));
-
-        private static readonly DependencyProperty _isUpdatingProperty =
-            DependencyProperty.RegisterAttached("_isUpdating", typeof(bool), typeof(PasswordBoxHelper), new PropertyMetadata(false));
-
-        private static bool _GetIsUpdating(DependencyObject dp) => (bool)dp.GetValue(_isUpdatingProperty);
-        private static void _SetIsUpdating(DependencyObject dp, bool value) => dp.SetValue(_isUpdatingProperty, value);
-
 
         public static string GetBoundPassword(DependencyObject d)
         {

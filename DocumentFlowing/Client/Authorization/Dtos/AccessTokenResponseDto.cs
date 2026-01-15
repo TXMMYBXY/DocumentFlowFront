@@ -1,9 +1,8 @@
-using DocumentFlowing.Client.Authorization.Dtos;
 using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Client.Authorization.ViewModels;
+namespace DocumentFlowing.Client.Authorization.Dtos;
 
-public class AccessTokenViewModelResponse
+public class AccessTokenResponseDto
 {
     [JsonPropertyName("userInfo")]
     public UserInfoDto UserInfo { get; set; }

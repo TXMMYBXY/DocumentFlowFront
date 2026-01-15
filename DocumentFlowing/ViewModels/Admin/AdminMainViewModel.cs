@@ -9,9 +9,10 @@ namespace DocumentFlowing.ViewModels.Admin
 {
     public class AdminMainViewModel : MainViewModelBase
     {
-        private object _currentView;
         private readonly INavigationService _navigationService;
         private readonly IAdminClient _adminClient;
+        
+        private object _currentView;
         
         public object CurrentView
         {

@@ -9,18 +9,18 @@ namespace DocumentFlowing.ViewModels.Controls;
 public class SidebarViewModel : BaseViewModel
 {
     private readonly ISessionProviderService _sessionProviderService;
+
+    public ICommand SettingsCommand { get; }
+    public ICommand LogoutCommand { get; set; }
     
     public SidebarViewModel(ISessionProviderService sessionProviderService)
     {
         _sessionProviderService = sessionProviderService;
         
-        LogoutCommand = new RelayCommand(async () => await ExecuteLogoutAsync());
+        LogoutCommand = new RelayCommand(async () => await _ExecuteLogoutAsync());
     }
-
-    public ICommand SettingsCommand { get; }
-    public ICommand LogoutCommand { get; set; }
     
-    private async Task ExecuteLogoutAsync()
+    private async Task _ExecuteLogoutAsync()
     {
         var result = MessageBox.Show(
             "Вы уверены, что хотите выйти?", 

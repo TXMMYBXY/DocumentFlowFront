@@ -1,4 +1,5 @@
 using DocumentFlowing.Client.Admin.Dtos;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
@@ -14,6 +15,7 @@ namespace DocumentFlowing.ViewModels.Admin;
 public class UpdateUserViewModel : BaseViewModel, IDialogService
 {
     private readonly UpdateUserModel _updateUserModel;
+    
     private string _errorMessage;
     private bool _isLoading;
     private bool _canCreate;
@@ -84,7 +86,12 @@ public class UpdateUserViewModel : BaseViewModel, IDialogService
     
     public ObservableCollection<Role> Roles { get; } = new();
     public ObservableCollection<string> DepartmentSuggestions { get; } = new();
-
+    
+    public ICommand SaveCommand { get; set; }
+    public ICommand CancelCommand { get; set; }
+    
+    public event Action<bool>? DialogClosed;
+    
     public UpdateUserViewModel(IAdminClient adminClient, UpdateUserDto updateUserDto, int userId)
     {
         _updateUserModel = new UpdateUserModel(adminClient);
@@ -95,12 +102,6 @@ public class UpdateUserViewModel : BaseViewModel, IDialogService
         SaveCommand = new RelayCommand(async () => await _UpdateUserAsync());
         CancelCommand = new RelayCommand(() => DialogClosed?.Invoke(true));
     }
-    
-    public event Action<bool>? DialogClosed;
-    
-    public ICommand SaveCommand { get; set; }
-    public ICommand CancelCommand { get; set; }
-    
     
     private async Task _UpdateUserAsync()
     {

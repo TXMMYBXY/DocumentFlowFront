@@ -19,6 +19,7 @@ public class DpapiService : IDpapiService
 
         byte[] plainBytes = Encoding.UTF8.GetBytes(plainText);
         byte[] encryptedBytes = ProtectedData.Protect(plainBytes, _entropy, DataProtectionScope.CurrentUser);
+        
         return Convert.ToBase64String(encryptedBytes);
     }
 
@@ -28,6 +29,7 @@ public class DpapiService : IDpapiService
 
         byte[] encryptedBytes = Convert.FromBase64String(encryptedText);
         byte[] plainBytes = ProtectedData.Unprotect(encryptedBytes, _entropy, DataProtectionScope.CurrentUser);
+        
         return Encoding.UTF8.GetString(plainBytes);
     }
     

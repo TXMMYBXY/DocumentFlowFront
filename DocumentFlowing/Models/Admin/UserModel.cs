@@ -4,12 +4,13 @@ using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.Views.Admin;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Models.Admin;
 
 public class UserModel
 {
     private readonly IAdminClient _adminClient;
     private readonly INavigationService _navigationService;
+    
     private List<GetUserDto> _users;
     
     public UserModel(IAdminClient adminClient, INavigationService navigationService)

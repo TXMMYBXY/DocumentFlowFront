@@ -1,7 +1,7 @@
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Models.Authorization;
 
 public class LoginModel
 {

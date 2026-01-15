@@ -1,5 +1,4 @@
 using DocumentFlowing.Client.Authorization.Dtos;
-using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Models;
 
 namespace DocumentFlowing.Interfaces.Client.Services;
@@ -17,7 +16,7 @@ public interface ITokenService
     /// <summary>
     /// Сохраняет токен обновления
     /// </summary>
-    void SaveRefreshToken(RefreshTokenResponseViewModel refreshTokenResponse);
+    void SaveRefreshToken(RefreshTokenResponseDto refreshTokenResponse);
     
     /// <summary>
     /// Возвращает токен доступа
@@ -58,6 +57,7 @@ public interface ITokenService
     /// Получить новый токен обновления
     /// </summary>
     Task GetNewRefreshTokenAsync();
+    
     /// <summary>
     /// Проверка срока жизни токена обновления. true если срок меньше 1 дня
     /// </summary>

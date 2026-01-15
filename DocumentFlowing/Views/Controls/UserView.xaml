@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:controls="clr-namespace:DocumentFlowing.ViewModels.Controls"
              xmlns:converters="clr-namespace:DocumentFlowing.Common"
-             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance controls:UserViewModel}">
@@ -18,24 +17,20 @@
         
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
         
-        <!-- Стиль для строк DataGrid -->
         <Style x:Key="DataGridRowStyle" TargetType="DataGridRow">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="False">
                     <Setter Property="Foreground" Value="Gray"/>
                     <Setter Property="Opacity" Value="0.7"/>
                 </DataTrigger>
-                <!-- Триггер для наведения курсора -->
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="Background" Value="#E0E0E0"/>
                     <Setter Property="Foreground" Value="Black"/>
                 </Trigger>
-                <!-- Триггер для выбранной строки -->
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="Background" Value="#B0C4DE"/>
                     <Setter Property="Foreground" Value="Black"/>
                 </Trigger>
-                <!-- Триггер для неактивной выбранной строки -->
                 <MultiDataTrigger>
                     <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsActive}" Value="False"/>
@@ -46,7 +41,6 @@
             </Style.Triggers>
         </Style>
         
-        <!-- Стиль для TextBox с кнопкой очистки -->
         <Style x:Key="SearchTextBoxStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -74,7 +68,6 @@
                                               VerticalAlignment="Center"
                                               Grid.Column="0"/>
                                 
-                                <!-- Кнопка очистки поиска -->
                                 <Button Grid.Column="1"
                                         Content="✕"
                                         FontSize="10"
@@ -221,7 +214,6 @@
                 
             </DataGrid>
             
-            <!-- Loading Indicator -->
             <Grid Grid.Row="1" 
                   Visibility="{Binding IsLoading, Converter={StaticResource BoolToVis}}"
                   Height="30"
@@ -232,7 +224,6 @@
                              Margin="10,5"/>
             </Grid>
             
-            <!-- Индикатор "ничего не найдено" -->
             <Border Grid.Row="0"
                     Background="White"
                     Visibility="{Binding UsersView.IsEmpty, Converter={StaticResource BoolToVis}}"
@@ -253,7 +244,6 @@
             </Border>
         </Grid>
         
-        <!-- Error Message -->
         <TextBlock Grid.Row="3"
                    Text="{Binding ErrorMessage}"
                    Foreground="Red"
@@ -261,12 +251,10 @@
                    TextWrapping="Wrap"
                    Visibility="{Binding ErrorMessage, Converter={StaticResource StringToVisibilityConverter}}"/>
         
-        <!-- Action Buttons for Selected User -->
         <StackPanel Grid.Row="3" 
                     Orientation="Horizontal" 
                     HorizontalAlignment="Right"
                     Margin="0,10,0,0">
-            <!-- Кнопки можно оставить закомментированными или удалить -->
         </StackPanel>
     </Grid>
 </UserControl>

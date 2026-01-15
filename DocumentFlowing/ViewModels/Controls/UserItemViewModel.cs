@@ -1,4 +1,5 @@
 using DocumentFlowing.Client.Admin.Dtos;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Models;
 using DocumentFlowing.ViewModels.Base;
 
@@ -8,9 +9,14 @@ public class UserItemViewModel : BaseViewModel
 {
     private readonly GetUserDto _userDto;
     
-    public UserItemViewModel(GetUserDto userDto)
+    public bool IsActive
     {
-        _userDto = userDto;
+        get => _userDto.IsActive;
+        set
+        {
+            _userDto.IsActive = value;
+            OnPropertyChanged(nameof(IsActive));
+        }
     }
     
     public int Id => _userDto.Id;
@@ -20,13 +26,8 @@ public class UserItemViewModel : BaseViewModel
     public string Department => _userDto.Department;
     public Role RoleEntity => _userDto.RoleEntity;
     
-    public bool IsActive
+    public UserItemViewModel(GetUserDto userDto)
     {
-        get => _userDto.IsActive;
-        set
-        {
-            _userDto.IsActive = value;
-            OnPropertyChanged(nameof(IsActive));
-        }
+        _userDto = userDto;
     }
 }

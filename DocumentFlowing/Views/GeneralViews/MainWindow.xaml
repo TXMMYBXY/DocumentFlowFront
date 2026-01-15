@@ -9,17 +9,13 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="220"/>
-            <!-- боковое меню -->
             <ColumnDefinition Width="*"/>
-            <!-- рабочая область -->
         </Grid.ColumnDefinitions>
-        <!-- Панель навигации слева -->
         <StackPanel Width="200" Background="#EEE" Grid.Column="0">
             <Button Content="LogIn" Margin="10" Click="loginClick"/>
             <Button Content="Settings" Margin="10" Click="settingsClick"/>
             <Button Content="Help" Margin="10" Click="helpClick"/>
         </StackPanel>
-        <!-- Основная область -->
         <ContentControl x:Name="ContentArea" Grid.Column="1" Margin="10"/>
         <!--<Grid Margin="210,0,0,0">
             <TextBlock Text="Wellcome to DocumentFlowing!" 

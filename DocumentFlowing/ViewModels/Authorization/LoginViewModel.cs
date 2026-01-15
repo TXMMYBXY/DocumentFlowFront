@@ -1,9 +1,8 @@
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
-using DocumentFlowing.Models;
+using DocumentFlowing.Models.Authorization;
 using DocumentFlowing.ViewModels.Base;
-using MahApps.Metro.Controls;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
@@ -12,37 +11,13 @@ namespace DocumentFlowing.ViewModels.Authorization;
 
 public class LoginViewModel : BaseViewModel, IAsyncInitialization
 {
+    private readonly INavigationService _navigationService;
+    private readonly LoginModel _loginModel;
+    
     private string _email;
     private string _password;
     private bool _isLoading = false;
-
-    private readonly INavigationService _navigationService;
-    private readonly LoginModel _loginModel;
-
-    public LoginViewModel(
-        IAuthorizationService authorizationService, 
-        ITokenService tokenService,
-        INavigationService navigationService)
-    {
-        _navigationService = navigationService;    
-        _loginModel = new LoginModel(authorizationService, tokenService);
-            
-        Initialization = InitializeAsync();
-        LoginCommand = new RelayCommand(
-            async () =>
-            {
-                IsLoading = true;
-                _Login();
-            },
-            () =>
-                !string.IsNullOrWhiteSpace(Email)
-                  || !string.IsNullOrWhiteSpace(Password));
-    }
     
-    public Task Initialization { get; private set; }
-    
-    public ICommand LoginCommand { get; }
-
     public string Email
     {
         get => _email;
@@ -66,14 +41,30 @@ public class LoginViewModel : BaseViewModel, IAsyncInitialization
     }
     
     public string LoginButtonText => IsLoading ? string.Empty : "Войти";
+    public Task Initialization { get; private set; }
+    public ICommand LoginCommand { get; }
 
-    private async Task<int?> GetRoleByLoggedIn()
+    public LoginViewModel(
+        IAuthorizationService authorizationService, 
+        ITokenService tokenService,
+        INavigationService navigationService)
     {
-        return await _loginModel.LoginByRefreshTokenAsync();
+        _navigationService = navigationService;    
+        _loginModel = new LoginModel(authorizationService, tokenService);
+            
+        Initialization = _InitializeAsync();
+        LoginCommand = new RelayCommand(
+            async () =>
+            {
+                IsLoading = true;
+                _Login();
+            },
+            () =>
+                !string.IsNullOrWhiteSpace(Email)
+                  || !string.IsNullOrWhiteSpace(Password));
     }
 
-    
-    public async Task InitializeAsync()
+    private async Task _InitializeAsync()
     {
         try
         {

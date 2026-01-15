@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using DocumentFlowing.Client.Authorization.Dtos;
-using DocumentFlowing.Client.Authorization.ViewModels;
+﻿using DocumentFlowing.Client.Authorization.Dtos;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
@@ -12,33 +10,26 @@ public class AuthorizationService :  IAuthorizationService
 {
     private readonly ITokenService _tokenService;
     private readonly IAuthorizationClient _authorizationClient;
-    private readonly IMapper _mapper;
-    private readonly INavigationService _navigationService;
 
     public AuthorizationService(
         ITokenService tokenService, 
-        IAuthorizationClient authorizationClient,
-        IMapper mapper,
-        INavigationService navigationService)
+        IAuthorizationClient authorizationClient)
     {
         _tokenService = tokenService;
         _authorizationClient = authorizationClient;
-        _mapper = mapper;
-        _navigationService = navigationService;
     }
+    
     public async Task<bool> TryAutoLoginAsync()
     {
         try
         {
-            var request = new RefreshTokenToLoginRequestViewModel
+            var request = new RefreshTokenToLoginRequestDto
             {
                 RefreshToken = _tokenService.ReturnRefreshToken()
             };
             
             if (!string.IsNullOrEmpty(request.RefreshToken))
             {
-                // Запрос к API за доступом
-                
                 var refreshToken 
                     = await _authorizationClient.RequestForAccessAsync(request, "authorization/request-for-access");
 
@@ -71,9 +62,7 @@ public class AuthorizationService :  IAuthorizationService
 
             if (response != null && !string.IsNullOrEmpty(response.AccessToken))
             {
-                // Сохраняем токены
                 _tokenService.SaveTokens(response);
-                // LoginSuccessful?.Invoke(this, EventArgs.Empty);
 
                 return _tokenService.GetUserInfo().RoleId;
             }

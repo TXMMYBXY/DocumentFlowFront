@@ -18,9 +18,9 @@ public class AdminClient : GeneralClient, IAdminClient
         return await GetResponseAsync<List<GetUserDto>>(uri);
     }
 
-    public async Task<object> CreateNewUserAsync(CreateNewUserDto createNewUserDto)
+    public async Task CreateNewUserAsync(CreateNewUserDto createNewUserDto)
     {
-        return await PostResponseAsync<CreateNewUserDto, CreateNewUserDto>(createNewUserDto, "users/add-user");
+        await PostResponseAsync<CreateNewUserDto, CreateNewUserDto>(createNewUserDto, "users/add-user");
     }
 
     public async Task<bool> ChangeStatusByIdAsync(int userId)

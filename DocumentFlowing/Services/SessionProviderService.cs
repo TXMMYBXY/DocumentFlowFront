@@ -9,6 +9,10 @@ public class SessionProviderService : ISessionProviderService
     private readonly ITokenService _tokenService;
     private readonly INavigationService _navigationService;
 
+    public bool IsAuthenticated => _tokenService.IsRefreshTokenValid();
+    
+    public event EventHandler? LogoutRequested;
+    
     public SessionProviderService(ITokenService tokenService, INavigationService navigationService)
     {
         _tokenService = tokenService;
@@ -22,7 +26,4 @@ public class SessionProviderService : ISessionProviderService
         
         await Task.CompletedTask;
     }
-
-    public bool IsAuthenticated => _tokenService.IsRefreshTokenValid();
-    public event EventHandler? LogoutRequested;
 }

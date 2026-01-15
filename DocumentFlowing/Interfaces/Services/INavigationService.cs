@@ -17,20 +17,14 @@ public interface INavigationService
     void NavigateTo<TView>() where TView : Window;
     
     /// <summary>
-    /// Метод для закрытия текущего окна
-    /// </summary>
-    void CloseCurrentWindow();
-    
-    /// <summary>
-    /// Метод открывает немодальное окно
+    /// Метод открывает модальное окно
     /// </summary>
     /// <typeparam name="T">Окно</typeparam>
     bool? ShowDialog<T>() where T : Window;
     /// <summary>
-    /// Метод открывает немодальное окно
+    /// Метод открывает модальное окно
     /// </summary>
     /// <param name="viewModel">ViewModel, в которую нужно передать параметры</param>
     /// <typeparam name="TView">View</typeparam>
-    /// <returns></returns>
     bool? ShowDialog<T>(BaseViewModel viewModel) where T : Window;
 }
