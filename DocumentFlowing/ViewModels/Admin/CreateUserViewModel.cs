@@ -1,8 +1,8 @@
 using DocumentFlowing.Client.Admin.Dtos;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
-using DocumentFlowing.Models;
 using DocumentFlowing.Models.Admin;
 using DocumentFlowing.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -14,9 +14,11 @@ namespace DocumentFlowing.ViewModels.Admin
     public class CreateUserViewModel : BaseViewModel, IDialogService
     {
         private readonly CreateUserModel _createUserModel;
+        
         private bool _isLoading;
         private string _errorMessage;
         private bool _canCreate;
+        private bool _showPasswordMismatchError;
         
         private string _email;
         private string _password;
@@ -97,23 +99,21 @@ namespace DocumentFlowing.ViewModels.Admin
             set => SetField(ref _errorMessage, value);
         }
         
-        // Коллекции для ComboBox
-        public ObservableCollection<Role> Roles { get; } = new ();
-        public ObservableCollection<string> DepartmentSuggestions { get; } = new ();
-        
-        
         public bool CanCreate
         {
             get => _canCreate;
             private set => SetField(ref _canCreate, value);
         }
         
-        private bool _showPasswordMismatchError;
         public bool ShowPasswordMismatchError
         {
             get => _showPasswordMismatchError;
             set => SetField(ref _showPasswordMismatchError, value);
         }
+        
+        // Коллекции для ComboBox
+        public ObservableCollection<Role> Roles { get; } = new ();
+        public ObservableCollection<string> DepartmentSuggestions { get; } = new ();
         
         // Команды
         public ICommand CreateCommand { get; }
@@ -163,7 +163,7 @@ namespace DocumentFlowing.ViewModels.Admin
                         }
                         
                         if (Roles.Any())
-                            SelectedRole = Roles.First();
+                            SelectedRole = Roles.Last();
                     });
                 });
             }

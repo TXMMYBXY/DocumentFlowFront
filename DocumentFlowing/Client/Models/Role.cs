@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Client.Models;
 
 public class Role
 {

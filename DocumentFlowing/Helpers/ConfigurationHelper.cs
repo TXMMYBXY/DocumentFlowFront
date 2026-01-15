@@ -17,23 +17,10 @@ public static class ConfigurationHelper
         {
             if (_configuration == null)
             {
-                InitializeConfiguration();
+                _InitializeConfiguration();
             }
             return _configuration;
         }
-    }
-
-    private static void InitializeConfiguration()
-    {
-        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        
-        var builder = new ConfigurationBuilder()
-            .SetBasePath(basePath)
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
-            .AddEnvironmentVariables();
-
-        _configuration = builder.Build();
     }
 
     public static IConfiguration GetConfiguration()
@@ -43,8 +30,6 @@ public static class ConfigurationHelper
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? 
-                                            "Production"}.json", optional: true)
                 .AddEnvironmentVariables();
             
             _configuration = builder.Build();
@@ -65,9 +50,16 @@ public static class ConfigurationHelper
         
         return services;
     }
-    public static DocumentFlowApi GetDocumentFlowApiSettings()
+    
+    private static void _InitializeConfiguration()
     {
-        return Configuration.GetSection("DocumentFlowApi").Get<DocumentFlowApi>()
-               ?? new DocumentFlowApi();
+        var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(basePath)
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables();
+
+        _configuration = builder.Build();
     }
 }

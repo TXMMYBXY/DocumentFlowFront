@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace DocumentFlowing.Client.Authorization.ViewModels;
+namespace DocumentFlowing.Client.Authorization.Dtos;
 
-public class AccessTokenViewModelRequest
+public class AccessTokenRequestDto
 {
     [JsonPropertyName("userId")]
     public int? UserId { get; set; }

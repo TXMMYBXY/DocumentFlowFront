@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using DocumentFlowing.Client.Authorization.Dtos;
-using DocumentFlowing.Client.Authorization.ViewModels;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
@@ -12,6 +11,7 @@ namespace DocumentFlowing.Services;
 public class TokenService : ITokenService
 {
     private const string RegistryPath = @"Software\DocumentFlowing\Tokens";
+    
     private readonly IDpapiService _dpapiService;
     private readonly IAuthorizationClient _authorizationClient;
     private readonly IMapper _mapper;
@@ -34,25 +34,27 @@ public class TokenService : ITokenService
 
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
             {
-                if (key == null) return;
+                if (key == null)
+                {
+                    return;
+                }
 
-                // Сохраняем access token
                 if (!string.IsNullOrEmpty(loginResponseDto.AccessToken))
                 {
                     var encryptedAccessToken = _dpapiService.Encrypt(loginResponseDto.AccessToken);
+                    
                     key.SetValue("AccessToken", encryptedAccessToken);
                     key.SetValue("AccessTokenExpires", loginResponseDto.ExpiresAt);
                 }
 
-                // Сохраняем refresh token
                 if (loginResponseDto.RefreshTokenDto != null && !string.IsNullOrEmpty(loginResponseDto.RefreshTokenDto.Token))
                 {
                     var encryptedRefreshToken = _dpapiService.Encrypt(loginResponseDto.RefreshTokenDto.Token);
+                    
                     key.SetValue("RefreshToken", encryptedRefreshToken);
                     key.SetValue("RefreshTokenExpires", loginResponseDto.RefreshTokenDto.ExpiresAt);
                 }
 
-                // Сохраняем информацию о пользователе
                 if (loginResponseDto.UserInfo != null)
                 {
                     key.SetValue("UserEmail", loginResponseDto.UserInfo.Email);
@@ -60,14 +62,12 @@ public class TokenService : ITokenService
                     key.SetValue("RoleId", loginResponseDto.UserInfo.RoleId);
                     key.SetValue("DepartmentId", loginResponseDto.UserInfo.DepartmentId);
 
-                    // Сохраняем userId из refresh token
                     if (loginResponseDto.RefreshTokenDto != null)
                     {
                         key.SetValue("UserId", loginResponseDto.RefreshTokenDto.UserId);
                     }
                 }
 
-                // Сохраняем тип токена
                 key.SetValue("TokenType", loginResponseDto.TokenType);
             }
         }
@@ -77,7 +77,7 @@ public class TokenService : ITokenService
         }
     }
 
-    public void SaveRefreshToken(RefreshTokenResponseViewModel refreshTokenResponse)
+    public void SaveRefreshToken(RefreshTokenResponseDto refreshTokenResponse)
     {
         try
         {
@@ -85,7 +85,10 @@ public class TokenService : ITokenService
 
             using (RegistryKey key = Registry.CurrentUser.CreateSubKey(RegistryPath))
             {
-                if (key == null) return;
+                if (key == null)
+                {
+                    return;
+                }
                 
                 if (refreshTokenResponse.Token != null && !string.IsNullOrEmpty(refreshTokenResponse.Token))
                 {
@@ -107,7 +110,10 @@ public class TokenService : ITokenService
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
-                if (key == null) return null;
+                if (key == null)
+                {
+                    return null;
+                }
 
                 var encryptedToken = key.GetValue("AccessToken") as string;
                 
@@ -128,7 +134,10 @@ public class TokenService : ITokenService
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
-                if (key == null) return null;
+                if (key == null)
+                {
+                    return null;
+                }
 
                 var encryptedToken = key.GetValue("RefreshToken") as string;
                 if (string.IsNullOrEmpty(encryptedToken)) return null;
@@ -148,7 +157,10 @@ public class TokenService : ITokenService
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
-                if (key == null) return null;
+                if (key == null)
+                {
+                    return null;
+                }
 
                 var roleId = key.GetValue("RoleId") as int?;
                 if (!roleId.HasValue) return null;
@@ -168,26 +180,9 @@ public class TokenService : ITokenService
         }
     }
 
-    private int? _GetUserId()
-    {
-        try
-        {
-            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
-            {
-                if (key == null) return null;
-
-                return key.GetValue("UserId") as int?;
-            }
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     public async Task<string> GetNewAccessTokenAsync()
     {
-        var request = new AccessTokenViewModelRequest
+        var request = new AccessTokenRequestDto
         {
             RefreshToken = ReturnRefreshToken(),
             UserId = _GetUserId()
@@ -212,7 +207,7 @@ public class TokenService : ITokenService
 
     public async Task GetNewRefreshTokenAsync()
     {
-        var request = new RefreshTokenViewModelRequest
+        var request = new RefreshTokenRequestDto
         {
             UserId = _GetUserId(),
             Token = ReturnRefreshToken()
@@ -234,9 +229,13 @@ public class TokenService : ITokenService
         {
             using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
             {
-                if (key == null) return false;
+                if (key == null)
+                {
+                    return false;
+                }
 
                 var expiresAtStr = key.GetValue("RefreshTokenExpires") as string;
+                
                 if (!string.IsNullOrEmpty(expiresAtStr) &&
                     DateTime.TryParse(expiresAtStr, out DateTime expiresAt))
                 {
@@ -260,7 +259,7 @@ public class TokenService : ITokenService
         }
         catch
         {
-            // Игнорируем ошибки, если ключ не существует
+            // Ошибки игнорируются, если ключ не существует
         }
     }
 
@@ -325,6 +324,23 @@ public class TokenService : ITokenService
         catch
         {
             return false;
+        }
+    }
+    
+    private int? _GetUserId()
+    {
+        try
+        {
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(RegistryPath))
+            {
+                if (key == null) return null;
+
+                return key.GetValue("UserId") as int?;
+            }
+        }
+        catch
+        {
+            return null;
         }
     }
 }

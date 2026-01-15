@@ -1,7 +1,7 @@
 using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Interfaces.Client;
 
-namespace DocumentFlowing.Models;
+namespace DocumentFlowing.Models.Admin;
 
 public class ResetPasswordModel
 {

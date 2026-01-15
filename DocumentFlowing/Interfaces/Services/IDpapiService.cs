@@ -1,5 +1,8 @@
 namespace DocumentFlowing.Interfaces.Services;
 
+/// <summary>
+/// Класс шифрования рефреш-токенов с использованием DPAPI
+/// </summary>
 public interface IDpapiService
 {
     /// <summary>

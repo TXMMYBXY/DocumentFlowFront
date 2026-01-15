@@ -8,9 +8,10 @@ namespace DocumentFlowing.Client.Authorization;
 
 public class AuthorizationHandler : DelegatingHandler
 {
-    private readonly ITokenService _tokenService;
-    private static readonly SemaphoreSlim _refreshLock = new SemaphoreSlim(1, 1);
+    private static readonly SemaphoreSlim _refreshLock = new (1, 1);
     private static bool _isRefreshing = false;
+    
+    private readonly ITokenService _tokenService;
         
     public AuthorizationHandler(ITokenService tokenService)
     {
@@ -43,14 +44,11 @@ public class AuthorizationHandler : DelegatingHandler
     {
         unauthorizedResponse.Dispose();
         
-        // Блокируем, чтобы избежать одновременных обновлений токена
         await _refreshLock.WaitAsync(cancellationToken);
         try
         {
-            // Проверяем, не обновляется ли уже токен в другом потоке
             if (_isRefreshing)
             {
-                // Ждем завершения обновления
                 while (_isRefreshing)
                 {
                     await Task.Delay(100, cancellationToken);
@@ -61,7 +59,6 @@ public class AuthorizationHandler : DelegatingHandler
                 _isRefreshing = true;
                 try
                 {
-                    // Используем существующий метод из сервиса для обновления токена
                     var refreshed = _tokenService.ReturnRefreshToken();
                     
                     if (string.IsNullOrEmpty(refreshed))
@@ -80,7 +77,6 @@ public class AuthorizationHandler : DelegatingHandler
             _refreshLock.Release();
         }
         
-        // Получаем новый токен
         var newToken = await _tokenService.GetNewAccessTokenAsync();
         
         if (string.IsNullOrEmpty(newToken))
@@ -88,11 +84,9 @@ public class AuthorizationHandler : DelegatingHandler
             throw new UnauthorizedAccessException("Access token is missing after refresh");
         }
         
-        // Создаем новый запрос (старый уже отправлен)
         var newRequest = await _CloneRequestAsync(originalRequest);
         newRequest.Headers.Authorization = new AuthenticationHeaderValue("Bearer", newToken);
         
-        // Повторяем запрос с новым токеном
         return await base.SendAsync(newRequest, cancellationToken);
     }
     
@@ -105,7 +99,6 @@ public class AuthorizationHandler : DelegatingHandler
             Version = original.Version
         };
         
-        // Копируем контент
         if (original.Content != null)
         {
             var ms = new MemoryStream();
@@ -113,14 +106,12 @@ public class AuthorizationHandler : DelegatingHandler
             ms.Position = 0;
             clone.Content = new StreamContent(ms);
             
-            // Копируем заголовки контента
             foreach (var header in original.Content.Headers)
             {
                 clone.Content.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
         }
         
-        // Копируем заголовки запроса
         foreach (var header in original.Headers)
         {
             clone.Headers.TryAddWithoutValidation(header.Key, header.Value);

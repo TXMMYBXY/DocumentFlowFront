@@ -3,6 +3,7 @@ using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
+using DocumentFlowing.Models.Admin;
 using DocumentFlowing.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.ComponentModel;

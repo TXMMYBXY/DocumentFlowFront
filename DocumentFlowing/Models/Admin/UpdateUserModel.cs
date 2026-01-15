@@ -1,4 +1,5 @@
 using DocumentFlowing.Client.Admin.Dtos;
+using DocumentFlowing.Client.Models;
 using DocumentFlowing.Interfaces.Client;
 
 namespace DocumentFlowing.Models.Admin;

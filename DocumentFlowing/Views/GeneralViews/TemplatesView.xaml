@@ -9,9 +9,7 @@
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="2*"/>
-            <!-- Список шаблонов -->
             <ColumnDefinition x:Name="PreviewColumn" Width="3*"/>
-            <!-- Предпросмотр -->
         </Grid.ColumnDefinitions>
 
         <!-- Левая часть: список шаблонов -->
