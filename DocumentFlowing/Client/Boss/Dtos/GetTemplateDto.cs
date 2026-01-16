@@ -5,15 +5,16 @@ namespace DocumentFlowing.Client.Boss.Dtos;
 
 public class GetTemplateDto
 {
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
     [JsonPropertyName("title")]
     public string Title { get; set; }
     [JsonPropertyName("path")]
     public string Path { get; set; }
     [JsonPropertyName("createdBy")]
-    [ForeignKey(nameof(CreatedBy))]
     public int CreatedBy { get; set; }
     [JsonPropertyName("createdAt")]
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; }
     [JsonPropertyName("isActive")]
     public bool IsActive { get; set; }
 }

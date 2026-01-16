@@ -219,7 +219,7 @@
             
             <Border Grid.Row="0"
                     Background="White"
-                    Visibility="{Binding UsersView.IsEmpty, Converter={StaticResource BoolToVis}}"
+                    Visibility="{Binding TemplatesView.IsEmpty, Converter={StaticResource BoolToVis}}"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Center"
                     Padding="20"

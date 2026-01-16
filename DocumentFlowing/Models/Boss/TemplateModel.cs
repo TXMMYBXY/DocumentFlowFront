@@ -1,3 +1,4 @@
+using DocumentFlowing.Client.Boss.Dtos;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
 
@@ -12,5 +13,15 @@ public class TemplateModel
     {
         _bossClient = bossClient;
         _navigationService = navigationService;
+    }
+
+    public async Task<List<GetTemplateDto>> GetAllTemplatesAsync()
+    {
+        return await _bossClient.GetAllTemplatesAsync();
+    }
+
+    public async Task<bool> ChangeStatusByIdAsync(int templateId)
+    {
+        return await _bossClient.ChangeStatusByIdAsync(templateId);
     }
 }

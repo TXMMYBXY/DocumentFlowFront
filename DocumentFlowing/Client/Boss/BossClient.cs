@@ -14,28 +14,28 @@ public class BossClient : GeneralClient, IBossClient
 
     public async Task<List<GetTemplateDto>> GetAllTemplatesAsync()
     {
-        return await GetResponseAsync<List<GetTemplateDto>>("contract-templates/all-contract-templates");
+        return await GetResponseAsync<List<GetTemplateDto>>("contract-templates/get-all");
     }
 
     public async Task CreateNewTemplateAsync(CreateTemplateDto createTemplateDto)
     {
-        await PostResponseAsync<CreateTemplateDto, CreateTemplateDto>(createTemplateDto, "templates/add-template");
+        await PostResponseAsync<CreateTemplateDto, CreateTemplateDto>(createTemplateDto, "contract-templates/add-template");
     }
 
-    public async Task ChangeStatusByIdAsync(int templateId)
+    public async Task<bool> ChangeStatusByIdAsync(int templateId)
     {
-        await PatchResponseAsync<object, object>(null, $"contract-templates/{templateId}/change-contract-template-status");
+        return await PatchResponseAsync<object, bool>(null, $"contract-templates/{templateId}/change-template-status");
     }
 
     public async Task DeleteTemplateByIdAsync(int templateId)
     {
         await DeleteResponseAsync<DeleteTemplateDto, object>(new DeleteTemplateDto {TemplateId = templateId}, 
-            "contract-templates/delete-contract-template");
+            "contract-templates/delete-template");
     }
 
     public async Task UpdateTemplateAsync(int templateId, UpdateTemplateDto updateTemplateDto)
     {
         await PatchResponseAsync<UpdateTemplateDto, object>(updateTemplateDto,
-            $"contract-templates/{templateId}/update-contract-template");
+            $"contract-templates/{templateId}/update-template");
     }
 }

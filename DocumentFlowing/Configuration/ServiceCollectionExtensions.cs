@@ -1,14 +1,17 @@
 using DocumentFlowing.Client;
 using DocumentFlowing.Client.Admin;
 using DocumentFlowing.Client.Authorization;
+using DocumentFlowing.Client.Boss;
 using DocumentFlowing.Client.Models;
 using DocumentFlowing.Helpers;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Middleware;
 using DocumentFlowing.Models;
 using DocumentFlowing.Models.Admin;
 using DocumentFlowing.Models.Authorization;
+using DocumentFlowing.Models.Boss;
 using DocumentFlowing.Services;
 using DocumentFlowing.ViewModels.Admin;
 using DocumentFlowing.ViewModels.Authorization;
@@ -56,6 +59,13 @@ public static class ServiceCollectionExtensions
             {
                 var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
             });
+        
+        services.AddHttpClient<IBossClient, BossClient>()
+            .AddHttpMessageHandler<AuthorizationHandler>()
+            .ConfigureHttpClient((provider, client) =>
+            {
+                var options = provider.GetRequiredService<IOptions<DocumentFlowApi>>();
+            });
 
         // Services
         services.AddScoped<IGeneralClient, GeneralClient>();
@@ -71,6 +81,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LoginModel>();
         services.AddScoped<ResetPasswordModel>();
         services.AddScoped<UpdateUserModel>();
+        services.AddScoped<TemplateModel>();
         
         // Views
         services.AddSingleton<MainWindow>();
@@ -83,6 +94,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CreateUserView>();
         services.AddTransient<ResetPasswordView>();
         services.AddTransient<UpdateUserView>();
+        services.AddTransient<TemplateView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
@@ -92,6 +104,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CreateUserViewModel>();
         services.AddTransient<ResetPasswordViewModel>();
         services.AddTransient<UpdateUserViewModel>();
+        services.AddTransient<TemplateViewModel>();
         
         return services;
     }

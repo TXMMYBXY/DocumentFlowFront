@@ -5,9 +5,8 @@ namespace DocumentFlowing.Interfaces.Client;
 public interface IAdminClient
 {
     /// <summary>
-    /// Получение списка всех пользователей
+    /// Получение списка всех пользователей users/get-all
     /// </summary>
-    /// <param name="uri">users/get-all</param>
     Task<List<GetUserDto>> GetAllUsersAsync();
     
     /// <summary>

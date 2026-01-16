@@ -5,6 +5,7 @@ using DocumentFlowing.Interfaces.Services;
 using DocumentFlowing.Models;
 using DocumentFlowing.Models.Admin;
 using DocumentFlowing.ViewModels.Base;
+using DocumentFlowing.ViewModels.Controls.Items;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -146,7 +147,7 @@ public class UserViewModel : BaseViewModel
     private void _ApplyFilter()
     {
         UsersView?.Refresh();
-        
+
         if (UsersView != null && !string.IsNullOrWhiteSpace(SearchText))
         {
             CountFounded = UsersView.OfType<UserItemViewModel>().Count();
