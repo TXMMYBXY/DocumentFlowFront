@@ -8,7 +8,7 @@ public interface IAdminClient
     /// Получение списка всех пользователей
     /// </summary>
     /// <param name="uri">users/get-all</param>
-    Task<List<GetUserDto>> GetAllUsersAsync(string uri);
+    Task<List<GetUserDto>> GetAllUsersAsync();
     
     /// <summary>
     /// Создание нового пользователя users/add-user

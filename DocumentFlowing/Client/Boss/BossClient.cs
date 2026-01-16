@@ -3,7 +3,6 @@ using DocumentFlowing.Client.Models;
 using DocumentFlowing.Interfaces.Client;
 using Microsoft.Extensions.Options;
 using System.Net.Http;
-using System.Windows.Documents;
 
 namespace DocumentFlowing.Client.Boss;
 
@@ -13,9 +12,9 @@ public class BossClient : GeneralClient, IBossClient
     {
     }
 
-    public async Task<List<GetTemplateDto>> GetAllTemplatesAsync(string uri)
+    public async Task<List<GetTemplateDto>> GetAllTemplatesAsync()
     {
-        return await GetResponseAsync<List<GetTemplateDto>>(uri);
+        return await GetResponseAsync<List<GetTemplateDto>>("contract-templates/all-contract-templates");
     }
 
     public async Task CreateNewTemplateAsync(CreateTemplateDto createTemplateDto)
@@ -25,16 +24,18 @@ public class BossClient : GeneralClient, IBossClient
 
     public async Task ChangeStatusByIdAsync(int templateId)
     {
-        throw new NotImplementedException();
+        await PatchResponseAsync<object, object>(null, $"contract-templates/{templateId}/change-contract-template-status");
     }
 
     public async Task DeleteTemplateByIdAsync(int templateId)
     {
-        throw new NotImplementedException();
+        await DeleteResponseAsync<DeleteTemplateDto, object>(new DeleteTemplateDto {TemplateId = templateId}, 
+            "contract-templates/delete-contract-template");
     }
 
     public async Task UpdateTemplateAsync(int templateId, UpdateTemplateDto updateTemplateDto)
     {
-        throw new NotImplementedException();
+        await PatchResponseAsync<UpdateTemplateDto, object>(updateTemplateDto,
+            $"contract-templates/{templateId}/update-contract-template");
     }
 }

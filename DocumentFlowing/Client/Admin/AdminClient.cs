@@ -13,9 +13,9 @@ public class AdminClient : GeneralClient, IAdminClient
     {
     }
 
-    public async Task<List<GetUserDto>> GetAllUsersAsync(string uri)
+    public async Task<List<GetUserDto>> GetAllUsersAsync()
     {
-        return await GetResponseAsync<List<GetUserDto>>(uri);
+        return await GetResponseAsync<List<GetUserDto>>("users/get-all");
     }
 
     public async Task CreateNewUserAsync(CreateNewUserDto createNewUserDto)
@@ -25,7 +25,7 @@ public class AdminClient : GeneralClient, IAdminClient
 
     public async Task<bool> ChangeStatusByIdAsync(int userId)
     {
-        return await UpdateResponseAsync<object, bool>(null, $"users/{userId}/change-status");
+        return await PatchResponseAsync<object, bool>(null, $"users/{userId}/change-status");
     }
 
     public async Task DeleteUserByIdAsync(int selectedUserId)
@@ -35,11 +35,11 @@ public class AdminClient : GeneralClient, IAdminClient
 
     public async Task ChangePasswordByIdAsync(int userId, ResetPasswordDto resetPasswordDto)
     {
-        await UpdateResponseAsync<ResetPasswordDto, object>(resetPasswordDto, $"users/{userId}/reset-password");
+        await PatchResponseAsync<ResetPasswordDto, object>(resetPasswordDto, $"users/{userId}/reset-password");
     }
 
     public async Task UpdateUserAsync(int userId, UpdateUserDto updateUserDto)
     {
-        await UpdateResponseAsync<UpdateUserDto, object>(updateUserDto, $"users/{userId}/update-user-info");
+        await PatchResponseAsync<UpdateUserDto, object>(updateUserDto, $"users/{userId}/update-user-info");
     }
 }
