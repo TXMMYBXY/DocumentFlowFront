@@ -12,6 +12,7 @@ public class BossMainViewModel : MainViewModelBase
 {
     private readonly INavigationService _navigationService;
     private readonly IBossClient _bossClient;
+    private readonly ISessionProviderService _sessionProvider;
     
     private object _currentView;
     
@@ -25,10 +26,14 @@ public class BossMainViewModel : MainViewModelBase
     public ICommand ShowReportsCommand { get; set; }
     public ICommand ShowArchiveCommand { get; set; }
     
-    public BossMainViewModel(IBossClient bossClient, INavigationService navigationService)
+    public BossMainViewModel(
+        IBossClient bossClient, 
+        INavigationService navigationService, 
+        ISessionProviderService sessionProvider)
     {
         _bossClient = bossClient;
         _navigationService = navigationService;
+        _sessionProvider = sessionProvider;
         
         ShowContractsCommand = new RelayCommand(_ShowTemplates);
         ShowReportsCommand = new RelayCommand(() => throw new NotImplementedException());
@@ -40,7 +45,7 @@ public class BossMainViewModel : MainViewModelBase
     private void _ShowTemplates()
     {
         var templatesView = new TemplateView();
-        templatesView.DataContext = new TemplateViewModel(_bossClient, _navigationService);
+        templatesView.DataContext = new TemplateViewModel(_bossClient, _navigationService, _sessionProvider);
         CurrentView = templatesView;
     }
 }

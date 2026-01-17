@@ -6,6 +6,7 @@ using DocumentFlowing.ViewModels.Base;
 using DocumentFlowing.ViewModels.Controls.Items;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -14,6 +15,8 @@ namespace DocumentFlowing.ViewModels.Controls;
 public class TemplateViewModel : BaseViewModel
 {
     private readonly TemplateModel _templateModel;
+    private readonly ISessionProviderService _sessionProvider;
+    private readonly MenuItemViewModel _useTemplateMenuItem;
     
     private ObservableCollection<TemplateItemViewModel> _templates = new();
     private ICollectionView _templatesView;
@@ -55,7 +58,11 @@ public class TemplateViewModel : BaseViewModel
     public TemplateItemViewModel SelectedTemplate
     {
         get => _selectedTemplate;
-        set => SetField(ref _selectedTemplate, value);
+        set 
+        {
+            SetField(ref _selectedTemplate, value);
+            _UpdateUseTemplateMenuItemVisibility();
+        }
     }
     
     public int CountFounded
@@ -76,18 +83,31 @@ public class TemplateViewModel : BaseViewModel
         }
     }
     
-    public ICommand AddTemplateCommand { get; set; }
-    public ICommand RefreshCommand { get; set; }
-    public ICommand ChangeTemplateStatusCommand { get; set; }
+    public ObservableCollection<MenuItemViewModel> ContextMenuItems { get; } = new();
     
-    public TemplateViewModel(IBossClient bossClient, INavigationService navigationService)
+    public ICommand AddTemplateCommand { get; private set; }
+    public ICommand RefreshCommand { get; private set; }
+    public ICommand ClearSearchCommand { get; private set; }
+    
+    public ICommand UseTemplateCommand { get; private set; }
+    public ICommand ChangeTemplateCommand { get; private set; }
+    public ICommand ChangeTemplateStatusCommand { get; private set; }
+    public ICommand DeleteTemplateCommand { get; private set; }
+    
+    
+    public TemplateViewModel(
+        IBossClient bossClient, 
+        INavigationService navigationService, 
+        ISessionProviderService sessionProvider)
     {
         _templateModel = new TemplateModel(bossClient, navigationService);
+        _sessionProvider = sessionProvider;
+
+        _InitializeCommands();
         
-        AddTemplateCommand = new RelayCommand(() => throw new NotImplementedException());
-        RefreshCommand = new RelayCommand(async () => await _LoadTemplatesAsync());
-        ChangeTemplateStatusCommand =
-            new RelayCommand(async () => await _ChangeUserStatusAsync());
+        _useTemplateMenuItem = new MenuItemViewModel { Header = "Использовать шаблон" };
+        
+        _BuildContextMenu();
         
         _ = _LoadTemplatesAsync();
     }
@@ -125,7 +145,7 @@ public class TemplateViewModel : BaseViewModel
         
         if (TemplatesView != null && !string.IsNullOrWhiteSpace(SearchText))
         {
-            CountFounded = TemplatesView.OfType<UserItemViewModel>().Count();
+            CountFounded = TemplatesView.OfType<TemplateItemViewModel>().Count();
         }
     }
 
@@ -147,8 +167,8 @@ public class TemplateViewModel : BaseViewModel
         var searchLower = SearchText.ToLower();
         
         return template.Title?.ToLower().Contains(searchLower) == true ||
-               template.CreatedBy.ToString().Contains(searchLower) == true ||
-               template.Path.ToLower().Contains(searchLower) == true ||
+               template.Owner.ToString().Contains(searchLower) == true ||
+               template.FilePath.ToLower().Contains(searchLower) == true ||
                template.CreatedAt.Date.ToString().Contains(searchLower) == true;
     }
     
@@ -174,5 +194,87 @@ public class TemplateViewModel : BaseViewModel
         {
             IsLoading = false;
         }
+    }
+    
+    private void _BuildContextMenu()
+    {
+        var currentUserRoleId = _sessionProvider.GetUserRoleId();
+
+        ContextMenuItems.Clear();
+
+        _useTemplateMenuItem.Command = UseTemplateCommand;
+        _useTemplateMenuItem.Visibility = Visibility.Collapsed;
+        ContextMenuItems.Add(_useTemplateMenuItem);
+        
+        ContextMenuItems.Add(new MenuItemViewModel
+        {
+            Header = "Изменить",
+            Command = ChangeTemplateCommand,
+            Visibility = _CheckCurrentUserIsBoss(currentUserRoleId)
+        });
+        
+        ContextMenuItems.Add(new MenuItemViewModel
+        {
+            Header = "Активировать/деактивировать",
+            Command = ChangeTemplateStatusCommand,
+            Visibility = _CheckCurrentUserIsBoss(currentUserRoleId)
+        });
+
+        ContextMenuItems.Add(new MenuItemViewModel {
+            Header = "Удалить",
+            Command = DeleteTemplateCommand,
+            Visibility = _CheckCurrentUserIsBoss(currentUserRoleId)
+        });
+    }
+
+    private Visibility _CheckCurrentUserIsBoss(int currentUserRoleId)
+    {
+        return currentUserRoleId == 2 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void _UpdateUseTemplateMenuItemVisibility()
+    {
+        _useTemplateMenuItem.Visibility = (SelectedTemplate != null && SelectedTemplate.IsActive) 
+            ? Visibility.Visible 
+            : Visibility.Collapsed;
+    }
+
+    private async Task _DeleteTemplateAsync()
+    {
+        if (SelectedTemplate == null) return;
+        
+        var result = MessageBox.Show($"Вы собираетесь удалить шаблон {SelectedTemplate.Title}. Продолжить?", 
+            "Удаление шаблона",
+            MessageBoxButton.YesNo, 
+            MessageBoxImage.Warning);
+        
+        if (result == MessageBoxResult.No) return;
+        
+        try
+        {
+            IsLoading = true;
+            
+            await _templateModel.DeleteTemplateByIdAsync(SelectedTemplate.Id);
+            
+            Templates.Remove(SelectedTemplate);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Ошибка удаления: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private void _InitializeCommands()
+    {
+        AddTemplateCommand = new RelayCommand(() => throw new NotImplementedException());
+        RefreshCommand = new RelayCommand(async () => await _LoadTemplatesAsync());
+        ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
+        ChangeTemplateStatusCommand = new RelayCommand(async () => await _ChangeUserStatusAsync());
+        DeleteTemplateCommand = new RelayCommand(async () => await _DeleteTemplateAsync());
+        
     }
 }

@@ -24,4 +24,14 @@ public class TemplateModel
     {
         return await _bossClient.ChangeStatusByIdAsync(templateId);
     }
+
+    public void OpenModalWindowCreateTemplate()
+    {
+        throw new NotImplementedException("Открытие окна создания шаблона не реализовано");
+    }
+
+    public async Task DeleteTemplateByIdAsync(int templateId)
+    {
+        await _bossClient.DeleteTemplateByIdAsync(templateId);
+    }
 }

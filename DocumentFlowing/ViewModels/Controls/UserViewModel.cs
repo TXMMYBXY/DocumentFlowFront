@@ -2,7 +2,6 @@ using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Common;
 using DocumentFlowing.Interfaces.Client;
 using DocumentFlowing.Interfaces.Services;
-using DocumentFlowing.Models;
 using DocumentFlowing.Models.Admin;
 using DocumentFlowing.ViewModels.Base;
 using DocumentFlowing.ViewModels.Controls.Items;
@@ -79,19 +78,23 @@ public class UserViewModel : BaseViewModel
         }
     }
 
+    public ObservableCollection<MenuItemViewModel> ContextMenuItems { get; } = new();
+    
     public ICommand AddUserCommand { get; private set; }
     public ICommand RefreshCommand { get; private set; }
+    public ICommand ClearSearchCommand { get; private set; }
+    
     public ICommand EditUserCommand { get; private set; }
     public ICommand ChangePasswordCommand { get; private set; }
     public ICommand ChangeUserStatusCommand { get; private set; }
     public ICommand DeleteUserCommand { get; private set; }
-    public ICommand ClearSearchCommand { get; private set; }
 
     public UserViewModel(IAdminClient adminClient, INavigationService navigationService)
     {
         _userModel = new UserModel(adminClient, navigationService);
-  
+
         _InitializeCommands();
+        _BuildContextMenu();
 
         _ = _InitializeAsync();
     }
@@ -149,9 +152,7 @@ public class UserViewModel : BaseViewModel
         UsersView?.Refresh();
 
         if (UsersView != null && !string.IsNullOrWhiteSpace(SearchText))
-        {
             CountFounded = UsersView.OfType<UserItemViewModel>().Count();
-        }
     }
 
     private async Task _LoadUsersAsync()
@@ -231,5 +232,34 @@ public class UserViewModel : BaseViewModel
         {
             IsLoading = false;
         }
+    }
+    
+    private void _BuildContextMenu()
+    {
+        ContextMenuItems.Clear();
+
+        ContextMenuItems.Add(new MenuItemViewModel
+        {
+            Header = "Изменить",
+            Command = EditUserCommand
+        });
+        
+        ContextMenuItems.Add(new MenuItemViewModel
+        {
+            Header = "Сменить пароль",
+            Command = ChangePasswordCommand,
+            CommandParameter=SelectedUser
+        });
+        
+        ContextMenuItems.Add(new MenuItemViewModel
+        {
+            Header = "Активировать/деактивировать",
+            Command = ChangeUserStatusCommand
+        });
+
+        ContextMenuItems.Add(new MenuItemViewModel {
+            Header = "Удалить",
+            Command = DeleteUserCommand
+        });
     }
 }

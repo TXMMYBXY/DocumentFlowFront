@@ -199,16 +199,16 @@
                 </DataGrid.Columns>
                 
                 <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Изменить" 
-                                  Command="{Binding EditUserCommand}"/>
-                        <MenuItem Header="Сменить пароль"
-                                  Command="{Binding ChangePasswordCommand}"
-                                  CommandParameter="{Binding SelectedUser}"/>
-                        <MenuItem Header="Активировать/деактивировать"
-                                  Command="{Binding ChangeUserStatusCommand}"/>
-                        <MenuItem Header="Удалить"
-                                  Command="{Binding DeleteUserCommand}"/>
+                    <ContextMenu ItemsSource="{Binding ContextMenuItems}">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header" Value="{Binding Header}"/>
+                                <Setter Property="Command" Value="{Binding Command}"/>
+                                <Setter Property="CommandParameter" 
+                                        Value="{Binding DataContext.SelectedUser, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                <Setter Property="Visibility" Value="{Binding Visibility}"/>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
                     </ContextMenu>    
                 </DataGrid.ContextMenu>
                 

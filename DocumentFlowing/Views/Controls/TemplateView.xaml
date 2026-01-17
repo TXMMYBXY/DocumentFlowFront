@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:converters="clr-namespace:DocumentFlowing.Common"
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="450" d:DesignWidth="800" 
              mc:Ignorable="d">
     <UserControl.Resources>
         <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter"/>
@@ -195,13 +195,16 @@
                 </DataGrid.Columns>
                 
                 <DataGrid.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Изменить" 
-                                  Command="{Binding EditTemplateCommand}"/>
-                        <MenuItem Header="Активировать/деактивировать"
-                                  Command="{Binding ChangeTemplateStatusCommand}"/>
-                        <MenuItem Header="Удалить"
-                                  Command="{Binding DeleteTemplateCommand}"/>
+                    <ContextMenu ItemsSource="{Binding ContextMenuItems}">
+                        <ContextMenu.ItemContainerStyle>
+                            <Style TargetType="MenuItem">
+                                <Setter Property="Header" Value="{Binding Header}"/>
+                                <Setter Property="Command" Value="{Binding Command}"/>
+                                <Setter Property="CommandParameter" 
+                                        Value="{Binding DataContext.SelectedTemplate, RelativeSource={RelativeSource AncestorType=ContextMenu}}"/>
+                                <Setter Property="Visibility" Value="{Binding Visibility}"/>
+                            </Style>
+                        </ContextMenu.ItemContainerStyle>
                     </ContextMenu>    
                 </DataGrid.ContextMenu>
                 

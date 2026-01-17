@@ -10,7 +10,12 @@ public class SessionProviderService : ISessionProviderService
     private readonly INavigationService _navigationService;
 
     public bool IsAuthenticated => _tokenService.IsRefreshTokenValid();
-    
+
+    public int GetUserRoleId()
+    {
+        return  _tokenService.GetUserInfo().RoleId;
+    }
+
     public event EventHandler? LogoutRequested;
     
     public SessionProviderService(ITokenService tokenService, INavigationService navigationService)

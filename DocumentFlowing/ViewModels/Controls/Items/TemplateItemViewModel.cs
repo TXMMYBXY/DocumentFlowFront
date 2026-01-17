@@ -19,8 +19,8 @@ public class TemplateItemViewModel : BaseViewModel
     
     public int Id => _templateDto.Id;
     public string Title => _templateDto.Title;
-    public string Path => _templateDto.Path;
-    public int CreatedBy => _templateDto.CreatedBy;
+    public string FilePath => _templateDto.Path;
+    public int Owner => _templateDto.CreatedBy;
     public DateTime CreatedAt => _templateDto.CreatedAt;
     
     public TemplateItemViewModel(GetTemplateDto templateDto)

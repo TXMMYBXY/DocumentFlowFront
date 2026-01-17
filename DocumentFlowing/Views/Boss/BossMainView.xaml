@@ -5,7 +5,8 @@
         Title="Administration Panel"
         Height="600"
         Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="../../Assets/icon.png">
 
     <Grid>
         <Grid.ColumnDefinitions>
