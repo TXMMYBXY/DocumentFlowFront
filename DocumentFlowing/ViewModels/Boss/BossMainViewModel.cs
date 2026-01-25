@@ -44,8 +44,8 @@ public class BossMainViewModel : MainViewModelBase
 
     private void _ShowTemplates()
     {
-        var templatesView = new TemplateView();
-        templatesView.DataContext = new TemplateViewModel(_bossClient, _navigationService, _sessionProvider);
+        var templatesView = new ContractTemplateView();
+        templatesView.DataContext = new ContractTemplateViewModel(_bossClient, _navigationService, _sessionProvider);
         CurrentView = templatesView;
     }
 }

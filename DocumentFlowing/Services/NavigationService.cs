@@ -32,7 +32,7 @@ public class NavigationService : INavigationService
             { typeof(AdminMainView), typeof(AdminMainViewModel) },
             { typeof(BossMainView), typeof(BossMainViewModel) },
             { typeof(CreateUserView), typeof(CreateUserViewModel) },
-            { typeof(TemplateView), typeof(TemplateViewModel) }
+            { typeof(ContractTemplateView), typeof(ContractTemplateViewModel) }
         };
         
         // Инициализаторы для View с SideBar
@@ -42,7 +42,7 @@ public class NavigationService : INavigationService
             { typeof(BossMainView), _InitializeWindowWithSidebar },
             { typeof(PurchaserMainView), _InitializeWindowWithSidebar },
             { typeof(UserMainView), _InitializeWindowWithSidebar },
-            { typeof(TemplateView), _InitializeWindowWithSidebar }
+            { typeof(ContractTemplateView), _InitializeWindowWithSidebar }
         };
     }
     

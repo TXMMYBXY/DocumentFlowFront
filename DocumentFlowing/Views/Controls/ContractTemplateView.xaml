@@ -1,4 +1,4 @@
-<UserControl x:Class="DocumentFlowing.Views.Controls.TemplateView"
+<UserControl x:Class="DocumentFlowing.Views.Controls.ContractTemplateView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -185,7 +185,7 @@
                                         Binding="{Binding Owner}" 
                                         Width="100"/>
                     
-                    <DataGridTextColumn Header="Дата регистрации" 
+                    <DataGridTextColumn Header="Дата создания" 
                                         Binding="{Binding CreatedAt}"/>
                     
                     <DataGridCheckBoxColumn Header="Статус" 

@@ -12,9 +12,9 @@ using System.Windows.Input;
 
 namespace DocumentFlowing.ViewModels.Controls;
 
-public class TemplateViewModel : BaseViewModel
+public class ContractTemplateViewModel : BaseViewModel
 {
-    private readonly TemplateModel _templateModel;
+    private readonly ContractTemplateModel _contractTemplateModel;
     private readonly ISessionProviderService _sessionProvider;
     private readonly MenuItemViewModel _useTemplateMenuItem;
     
@@ -95,12 +95,12 @@ public class TemplateViewModel : BaseViewModel
     public ICommand DeleteTemplateCommand { get; private set; }
     
     
-    public TemplateViewModel(
+    public ContractTemplateViewModel(
         IBossClient bossClient, 
         INavigationService navigationService, 
         ISessionProviderService sessionProvider)
     {
-        _templateModel = new TemplateModel(bossClient, navigationService);
+        _contractTemplateModel = new ContractTemplateModel(bossClient, navigationService);
         _sessionProvider = sessionProvider;
 
         _InitializeCommands();
@@ -119,7 +119,7 @@ public class TemplateViewModel : BaseViewModel
             IsLoading = true;
             ErrorMessage = string.Empty;
                 
-            var templatesList = await _templateModel.GetAllTemplatesAsync();
+            var templatesList = await _contractTemplateModel.GetAllTemplatesAsync();
                 
             Templates.Clear();
             foreach (var user in templatesList)
@@ -153,7 +153,7 @@ public class TemplateViewModel : BaseViewModel
     {
         TemplatesView = CollectionViewSource.GetDefaultView(Templates);
         TemplatesView.Filter = _TemplateFilter;
-        TemplatesView.SortDescriptions.Add(new SortDescription("Title", ListSortDirection.Ascending));
+        TemplatesView.SortDescriptions.Add(new SortDescription(nameof(SelectedTemplate.Title), ListSortDirection.Ascending));
     }
 
     private bool _TemplateFilter(object item)
@@ -180,7 +180,7 @@ public class TemplateViewModel : BaseViewModel
         {
             IsLoading = true;
             
-            var newStatus = await _templateModel.ChangeStatusByIdAsync(SelectedTemplate.Id);
+            var newStatus = await _contractTemplateModel.ChangeStatusByIdAsync(SelectedTemplate.Id);
             
             SelectedTemplate.IsActive = newStatus;
             
@@ -254,7 +254,7 @@ public class TemplateViewModel : BaseViewModel
         {
             IsLoading = true;
             
-            await _templateModel.DeleteTemplateByIdAsync(SelectedTemplate.Id);
+            await _contractTemplateModel.DeleteTemplateByIdAsync(SelectedTemplate.Id);
             
             Templates.Remove(SelectedTemplate);
         }
@@ -267,10 +267,10 @@ public class TemplateViewModel : BaseViewModel
             IsLoading = false;
         }
     }
-
+    
     private void _InitializeCommands()
     {
-        AddTemplateCommand = new RelayCommand(() => throw new NotImplementedException());
+        AddTemplateCommand = new RelayCommand(() => _contractTemplateModel.OpenModalWindowCreateTemplate());
         RefreshCommand = new RelayCommand(async () => await _LoadTemplatesAsync());
         ClearSearchCommand = new RelayCommand(() => SearchText = string.Empty);
         ChangeTemplateStatusCommand = new RelayCommand(async () => await _ChangeUserStatusAsync());

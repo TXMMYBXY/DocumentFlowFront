@@ -2,9 +2,9 @@ using System.Windows.Controls;
 
 namespace DocumentFlowing.Views.Controls;
 
-public partial class TemplateView : UserControl
+public partial class StatementTemplateView : UserControl
 {
-    public TemplateView()
+    public StatementTemplateView()
     {
         InitializeComponent();
     }

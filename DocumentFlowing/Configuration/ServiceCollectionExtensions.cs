@@ -81,7 +81,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<LoginModel>();
         services.AddScoped<ResetPasswordModel>();
         services.AddScoped<UpdateUserModel>();
-        services.AddScoped<TemplateModel>();
+        services.AddScoped<ContractTemplateModel>();
         
         // Views
         services.AddSingleton<MainWindow>();
@@ -94,7 +94,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CreateUserView>();
         services.AddTransient<ResetPasswordView>();
         services.AddTransient<UpdateUserView>();
-        services.AddTransient<TemplateView>();
+        services.AddTransient<ContractTemplateView>();
         
         // ViewModels
         services.AddTransient<LoginViewModel>();
@@ -104,7 +104,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<CreateUserViewModel>();
         services.AddTransient<ResetPasswordViewModel>();
         services.AddTransient<UpdateUserViewModel>();
-        services.AddTransient<TemplateViewModel>();
+        services.AddTransient<ContractTemplateViewModel>();
         
         return services;
     }

@@ -1,15 +1,20 @@
 using DocumentFlowing.Client.Boss.Dtos;
 using DocumentFlowing.Interfaces.Client;
+using DocumentFlowing.Interfaces.Client.Services;
 using DocumentFlowing.Interfaces.Services;
+using DocumentFlowing.Views.Boss;
 
 namespace DocumentFlowing.Models.Boss;
 
-public class TemplateModel
+public class ContractTemplateModel : ITemplateEndpoint
 {
+    public static string BaseEndpoint { get; } = "contract-template";
+    
     private readonly IBossClient _bossClient;
     private readonly INavigationService _navigationService;
+
     
-    public TemplateModel(IBossClient bossClient, INavigationService navigationService)
+    public ContractTemplateModel(IBossClient bossClient, INavigationService navigationService)
     {
         _bossClient = bossClient;
         _navigationService = navigationService;
@@ -17,21 +22,21 @@ public class TemplateModel
 
     public async Task<List<GetTemplateDto>> GetAllTemplatesAsync()
     {
-        return await _bossClient.GetAllTemplatesAsync();
+        return await _bossClient.GetAllTemplatesAsync<ContractTemplateModel>();
     }
 
     public async Task<bool> ChangeStatusByIdAsync(int templateId)
     {
-        return await _bossClient.ChangeStatusByIdAsync(templateId);
+        return await _bossClient.ChangeStatusByIdAsync<ContractTemplateModel>(templateId);
     }
 
     public void OpenModalWindowCreateTemplate()
     {
-        throw new NotImplementedException("Открытие окна создания шаблона не реализовано");
+        _navigationService.ShowDialog<CreateTemplateView>();
     }
 
     public async Task DeleteTemplateByIdAsync(int templateId)
     {
-        await _bossClient.DeleteTemplateByIdAsync(templateId);
+        await _bossClient.DeleteTemplateByIdAsync<ContractTemplateModel>(templateId);
     }
 }
