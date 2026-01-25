@@ -19,7 +19,7 @@ public class GeneralClient : IGeneralClient
         _documentFlowApi = documentFlowApi.Value;
     }
 
-    public async Task<TResponse?> UpdateResponseAsync<TRequest, TResponse>(TRequest request, string uri)
+    public async Task<TResponse?> PatchResponseAsync<TRequest, TResponse>(TRequest request, string uri)
     {
         var requestJson = JsonSerializer.Serialize(request);
         var requestContent = new StringContent(requestJson, Encoding.UTF8, "application/json");

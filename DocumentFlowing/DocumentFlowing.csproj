@@ -10,8 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\Client\Services\" />
-    <Folder Include="Middleware\" />
     <Folder Include="ViewModels\Purchaser\" />
     <Folder Include="ViewModels\User\" />
       <Content Include="appsettings.json">

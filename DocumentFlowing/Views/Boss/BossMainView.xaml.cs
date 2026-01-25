@@ -13,23 +13,9 @@ namespace DocumentFlowing.Views.Boss
     /// </summary>
     public partial class BossMainView : Window
     {
-
         public BossMainView()
         {
             InitializeComponent();
-            ContentArea.Content = new TemplatesView();
-            //Sidebar.AddMenuItem("Documents", documents_Click);
-            //Sidebar.AddMenuItem("Reports", reports_Click);
-        }
-
-        private void documents_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("documentsClick");
-        }
-
-        private void reports_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("reportsClick");
         }
     }
 }

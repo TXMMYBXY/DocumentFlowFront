@@ -1,4 +1,4 @@
-namespace DocumentFlowing.Interfaces.Services;
+﻿namespace DocumentFlowing.Interfaces.Services;
 
 public interface ISessionProviderService
 {
@@ -7,5 +7,6 @@ public interface ISessionProviderService
     /// </summary>
     Task LogoutAsync();
     bool IsAuthenticated { get; }
+    int GetUserRoleId();
     event EventHandler LogoutRequested;
 }

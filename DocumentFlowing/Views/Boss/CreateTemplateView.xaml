@@ -1,0 +1,76 @@
+<Window x:Class="DocumentFlowing.Views.Boss.CreateTemplateView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:DocumentFlowing.Views.Boss"
+        xmlns:common="clr-namespace:DocumentFlowing.Common"
+        mc:Ignorable="d"
+        Title="CreateTemplateView" Height="300" Width="500">
+    <Window.Resources>
+        <common:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+    </Window.Resources>
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0" Text="Файл" Margin="0,0,0,5"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <TextBox Grid.Column="0" 
+                     Text="{Binding Files, UpdateSourceTrigger=PropertyChanged}" 
+                     Margin="0,0,10,0" 
+                     IsReadOnly="True"/>
+            
+            <Button Grid.Column="1" 
+                    Content="Выбрать"
+                    Command="{Binding SelectFileCommand}"/>
+        </Grid>
+        
+        <TextBlock Grid.Row="2" Text="Название шаблона" Margin="0,0,0,5"/>
+        <TextBox x:Name="PasswordBox" 
+                 Grid.Row="3"
+                 Margin="0,0,0,10"/>
+        
+        <TextBlock Grid.Row="4" Text="Тип шаблона:" Margin="0,0,0,5"/>
+        <ComboBox Grid.Row="5"
+                  IsEditable="True"
+                  ItemsSource="{Binding TemplateSuggestions}"
+                  Text="{Binding Department, UpdateSourceTrigger=PropertyChanged}"
+                  Margin="0,0,0,15"/>
+        
+        <TextBlock Grid.Row="6"
+                   Text="{Binding ErrorMessage}"
+                   Foreground="Red"
+                   Margin="0,0,0,10"
+                   TextWrapping="Wrap"
+                   Visibility="{Binding ErrorMessage, 
+                   Converter={StaticResource StringToVisibilityConverter}}"/>
+        
+        <StackPanel Grid.Row="7" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Создать" 
+                    Command="{Binding CreateCommand}"
+                    Width="80"
+                    Margin="0,0,10,0"
+                    IsDefault="True"/>
+            
+            <Button Content="Отмена" 
+                    Command="{Binding CancelCommand}"
+                    Width="80"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

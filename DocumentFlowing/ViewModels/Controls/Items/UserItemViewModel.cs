@@ -1,9 +1,8 @@
 using DocumentFlowing.Client.Admin.Dtos;
 using DocumentFlowing.Client.Models;
-using DocumentFlowing.Models;
 using DocumentFlowing.ViewModels.Base;
 
-namespace DocumentFlowing.ViewModels.Controls;
+namespace DocumentFlowing.ViewModels.Controls.Items;
 
 public class UserItemViewModel : BaseViewModel
 {

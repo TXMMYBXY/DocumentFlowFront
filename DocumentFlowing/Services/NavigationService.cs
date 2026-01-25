@@ -7,6 +7,7 @@ using DocumentFlowing.ViewModels.Controls;
 using DocumentFlowing.Views.Admin;
 using DocumentFlowing.Views.Authorization;
 using DocumentFlowing.Views.Boss;
+using DocumentFlowing.Views.Controls;
 using DocumentFlowing.Views.Purchaser;
 using DocumentFlowing.Views.User;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,6 +32,7 @@ public class NavigationService : INavigationService
             { typeof(AdminMainView), typeof(AdminMainViewModel) },
             { typeof(BossMainView), typeof(BossMainViewModel) },
             { typeof(CreateUserView), typeof(CreateUserViewModel) },
+            { typeof(ContractTemplateView), typeof(ContractTemplateViewModel) }
         };
         
         // Инициализаторы для View с SideBar
@@ -39,7 +41,8 @@ public class NavigationService : INavigationService
             { typeof(AdminMainView), _InitializeWindowWithSidebar },
             { typeof(BossMainView), _InitializeWindowWithSidebar },
             { typeof(PurchaserMainView), _InitializeWindowWithSidebar },
-            { typeof(UserMainView), _InitializeWindowWithSidebar }
+            { typeof(UserMainView), _InitializeWindowWithSidebar },
+            { typeof(ContractTemplateView), _InitializeWindowWithSidebar }
         };
     }
     

@@ -21,7 +21,7 @@ public class UserModel
     
     public async Task<List<GetUserDto>> GetAllUsersAsync()
     {
-        _users = await _adminClient.GetAllUsersAsync("users/get-all");
+        _users = await _adminClient.GetAllUsersAsync();
         return _users;
     }
 

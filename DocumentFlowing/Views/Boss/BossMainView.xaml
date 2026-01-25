@@ -5,7 +5,8 @@
         Title="Administration Panel"
         Height="600"
         Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Icon="../../Assets/icon.png">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,13 +17,25 @@
         <StackPanel Background="#EFEFEF" Grid.Column="0">
             <TextBlock Text="Boss Panel" FontWeight="Bold" FontSize="18" Margin="10,20,10,20"/>
 
-            <Button Content="Documents" Margin="10,5" Click="documents_Click"/>
-            <Button Content="Reports" Margin="10,5" Click="reports_Click"/>
+            <Button Content="Contracts" 
+                    Margin="10,5"
+                    Command="{Binding ShowContractsCommand}"/>
+            
+            <Button Content="Statements" 
+                    Margin="10,5"
+                    Command="{Binding ShowReportsCommand}"/>
+            
+            <Button Content="Archive" 
+                    Margin="10,5"
+                    Command="{Binding ShowArchiveCommand}"/>
             <UserControl>
                 <controls:SidebarView DataContext="{Binding SidebarViewModel}"/>
             </UserControl>
         </StackPanel>
         
-        <ContentControl x:Name="ContentArea" Grid.Column="1" Margin="10"/>
+        <ContentControl x:Name="ContentArea" 
+                        Grid.Column="1" 
+                        Margin="10" 
+                        Content="{Binding CurrentView}"/>
     </Grid>
 </Window>

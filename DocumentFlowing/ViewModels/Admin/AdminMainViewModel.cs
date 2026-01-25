@@ -5,48 +5,47 @@ using DocumentFlowing.ViewModels.Base;
 using DocumentFlowing.ViewModels.Controls;
 using System.Windows.Input;
 
-namespace DocumentFlowing.ViewModels.Admin
+namespace DocumentFlowing.ViewModels.Admin;
+
+public class AdminMainViewModel : MainViewModelBase
 {
-    public class AdminMainViewModel : MainViewModelBase
+    private readonly INavigationService _navigationService;
+    private readonly IAdminClient _adminClient;
+        
+    private object _currentView;
+        
+    public object CurrentView
     {
-        private readonly INavigationService _navigationService;
-        private readonly IAdminClient _adminClient;
+        get => _currentView;
+        set => SetField(ref _currentView, value);
+    }
         
-        private object _currentView;
+    public ICommand ShowTemplatesCommand { get; }
+    public ICommand ShowUsersCommand { get; }
         
-        public object CurrentView
-        {
-            get => _currentView;
-            set => SetField(ref _currentView, value);
-        }
-        
-        public ICommand ShowTemplatesCommand { get; }
-        public ICommand ShowUsersCommand { get; }
-        
-        public AdminMainViewModel(INavigationService navigationService, IAdminClient adminClient)
-        {
-            _navigationService = navigationService;
-            _adminClient = adminClient;
+    public AdminMainViewModel(INavigationService navigationService, IAdminClient adminClient)
+    {
+        _navigationService = navigationService;
+        _adminClient = adminClient;
             
-            ShowTemplatesCommand = new RelayCommand(_ShowTemplates);
-            ShowUsersCommand = new RelayCommand(_ShowUsers);
+        ShowTemplatesCommand = new RelayCommand(_ShowTemplates);
+        ShowUsersCommand = new RelayCommand(_ShowUsers);
             
-            _ShowUsers();
-        }
+        _ShowUsers();
+    }
         
-        private void _ShowTemplates()
-        {
-            // var templatesView = new Views.Controls.TemplatesView();
-            // // Установите DataContext если нужно
-            // // templatesView.DataContext = new TemplatesViewModel();
-            // CurrentView = templatesView;
-        }
+    private void _ShowTemplates()
+    {
+        // var templatesView = new Views.Controls.TemplatesView();
+        // // Установите DataContext если нужно
+        // // templatesView.DataContext = new TemplatesViewModel();
+        // CurrentView = templatesView;
+    }
         
-        private void _ShowUsers()
-        {
-            var usersView = new Views.Controls.UserView();
-            usersView.DataContext = new UserViewModel(_adminClient, _navigationService);
-            CurrentView = usersView;
-        }
+    private void _ShowUsers()
+    {
+        var usersView = new Views.Controls.UserView();
+        usersView.DataContext = new UserViewModel(_adminClient, _navigationService);
+        CurrentView = usersView;
     }
 }

@@ -10,7 +10,7 @@ public interface IGeneralClient
     /// <typeparam name="TRequest">Тип запроса</typeparam>
     /// <typeparam name="TResponse">Тип ответа</typeparam>
     /// <returns>TResponse</returns>
-    Task<TResponse?> UpdateResponseAsync<TRequest, TResponse>(TRequest request, string uri);
+    Task<TResponse?> PatchResponseAsync<TRequest, TResponse>(TRequest request, string uri);
     
     /// <summary>
     /// Базовый метод для эндпоинтов Post
